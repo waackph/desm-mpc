@@ -3,6 +3,7 @@
 //Output: Float score
 
 #include <stdio.h>
+#include "desm.h"
 
 float euclid(float vec[3], int n){
 	int norm = 0;
@@ -45,16 +46,4 @@ float desm(float Q[][3], float D[3], int n, int Qn){
 	return cosine;
 }
 
-int main(){
-	//initilize output
-	float score;
-	//initilize test arrays
-	float q[][3] = {1.0,2.0,3.0};
-	float d[3] = {1.0,2.0,3.0};
-	//initilize size of the arrays
-	int amountq = sizeof(q) / sizeof(q[0]);
-	int n = sizeof(q[0]) / sizeof(q[0][0]);
-	score = desm(q, d, n, amountq);
-	printf("Score: %f\n", score);
-	return 0;
-}
+
