@@ -48,9 +48,21 @@ r"""
 		}
 		return cosine/Qn;
 	}
+	
+	//args: queries as word-vectors, documents as word-vectors, len(word-vec), amount queries, amount Docs
+	double * scores(double Q[][200], double Docs[][200], int n, int Qn, int Dn, double score[]){
+		int i;
+		for(i=0; i<Dn; i = i+1){
+			score[i] = desm(Q, Docs[i], n, Qn);
+		}
+		return score;
+	}
 """)
 
 ffibuilder.cdef("""
+
+	double * scores(double Q[][200], double Docs[][200], int n, int Qn, int Dn, double score[]);
+
 	double euclid(double vec[200], int n);
 
 	double dotprod(double vec1[200], double vec2[200], int n);

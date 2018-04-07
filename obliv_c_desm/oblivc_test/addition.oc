@@ -1,0 +1,19 @@
+#include<obliv.oh>
+#include"addition.h"
+
+void add(void* args){
+	protocolIO *io = (protocolIO*) args;
+	
+	//Input
+	obliv int v1, v2;	
+	//Result
+	int sum;
+	
+	v1 = feedOblivInt(io->num, 1);
+	v2 = feedOblivInt(io->num, 2);
+	
+	revealOblivInt(&sum, v1+v2, 0);
+	
+	io->sum = sum;
+}
+

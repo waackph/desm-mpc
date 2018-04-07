@@ -28,14 +28,26 @@ with open('query_embedds.obj', 'rb') as f:
 	q = pickle.load(f)
 
 doc_title = ['Cambridge', 'Oxford', 'Giraffes', 'Giraffes_switched', 'Cambridge_switched', 'query']
-amountq = 1
-n = 200
+
+#amount of Query-words (or queries?)
+Qn = 1
+#transform queries to lists
 q = [q[0].tolist()]
-#d = docs[0].tolist()
+#amount of word-vector-items
+n = 200
+#amount of Documents
+Dn = len(docs)
+ds = []
+#transform documents to lists
 for idx, d in enumerate(docs):
-	#qc = ffi.new("float[1][200]", q)
-	#dc = ffi.new("float[200]", d.tolist())
-	score = lib.desm(q, d.tolist(), n, amountq)
+	ds.append(d.tolist())
+
+
+scores = ffi.new("double["+str(Dn)+"]")
+
+lib.scores(q, ds, n, Qn, Dn, scores)
+
+for idx, score in enumerate(scores):
 	print(doc_title[idx], str(score), '\n')
 
 ##################################
