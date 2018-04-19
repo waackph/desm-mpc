@@ -1,2 +1,0 @@
-~/Schreibtisch/Uni/MA/Forschungsprojekt/word2vec_Impl/obliv-c/bin/oblivcc addition.c addition.h addition.oc -I . 
-

@@ -2,10 +2,10 @@
 #include<stdlib.h>
 #include<obliv.h>
 
-#include"addition.h"
+#include"desm.h"
 
-int setup(int party, int number){
-	if(2==2){
+float * setup(int party, float vecs[][200], int amount){
+	if(party==1 | party==2){
 		//localhost: 127.0.0.1
 		const char *remote_host = "127.0.0.1";
 		const char *port = "1234";
@@ -13,14 +13,12 @@ int setup(int party, int number){
 		protocolIO io;
 
 		if(party==1){
-			printf("accepting");
 			if(protocolAcceptTcp2P(&pd, port)!=0){
 				printf("TCP accept failed\n");
 				exit(1);
 			}
 		}
 		else{
-			printf("connecting");
 			if(protocolConnectTcp2P(&pd, remote_host, port)!=0){
 				printf("TCP connect failed\n");
 				exit(1);
@@ -30,12 +28,17 @@ int setup(int party, int number){
 		//Initilization before entering protocol..
 		int cp = (party==1 ? 1 : 2);
 		setCurrentParty(&pd, cp);
-		io.num = number;
+
+		//memcpy(io->vecs, vecs, sizeof vecs);
+		io.vecs = vecs;
+		io.amount = amount;
 		
-		execYaoProtocol(&pd, add, &io);
+		execYaoProtocol(&pd, desm, &io);
 		cleanupProtocol(&pd);
 
-		printf("Result: %d\n", io.sum);
+		printf("Done!\n");
+
+		return io.scores;
 
 	}
 
@@ -43,8 +46,5 @@ int setup(int party, int number){
 		fprintf(stderr, "Argument missing (party, number)\n");
 		return 1;
 	}
-
-	return 0;
+	
 }
-
-

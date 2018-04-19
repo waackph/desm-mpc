@@ -4,3 +4,6 @@ typedef struct{
 } protocolIO;
 
 void add(void* args);
+
+int setup(int party, int number);
+
