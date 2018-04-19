@@ -4,7 +4,9 @@
 
 #include"desm.h"
 
-float * setup(int party, float vecs[][200], int amount){
+// Setup for each party: Arguments are the party, the document/word vectors, 
+// amount of Documents or Query-Words
+float * setup(int party, float vecs[][200], int amount, float scores[]){
 	if(party==1 | party==2){
 		//localhost: 127.0.0.1
 		const char *remote_host = "127.0.0.1";
@@ -25,20 +27,28 @@ float * setup(int party, float vecs[][200], int amount){
 			}
 		}
 
-		//Initilization before entering protocol..
+		//Initilization before entering protocol
 		int cp = (party==1 ? 1 : 2);
 		setCurrentParty(&pd, cp);
 
+		//Save the Input-vectors and the count to the struct shared with oblivc-Code
+		//NOT WORKING YET! HOW TO CORRECTLY SAVE ARRAYS IN STRUCT?
 		//memcpy(io->vecs, vecs, sizeof vecs);
 		io.vecs = vecs;
 		io.amount = amount;
-		
-		execYaoProtocol(&pd, desm, &io);
-		cleanupProtocol(&pd);
 
+		//Start secure computation code here
+		execYaoProtocol(&pd, desm, &io);
+
+		//clean project
+		cleanupProtocol(&pd);
 		printf("Done!\n");
 
-		return io.scores;
+		//Return the scores to python-reachable variable for party 2 (who provided the query)
+		if(party==2){
+			scores = io.scores;
+		}
+		return 0;
 
 	}
 

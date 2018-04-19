@@ -103,6 +103,7 @@ void desm(void* args){
 	//Initilize & feed obliv variables
 
 	//Amount of Documents and Queries (stays constant)
+	//cant be obliv, because they are needed for several loops
 	int Dn;
 	int Qn;
 	//Helper variable for loops 
@@ -128,12 +129,14 @@ void desm(void* args){
 		Q[i] = malloc(sizeof(obliv float) * 200);
 	}
 
+	//convert the 2-Dim. Arrays of the structs to obliv Arrays
 	toObliv(Dn, D, io->vecs, ocCurrentParty());
 	toObliv(Qn, Q, io->vecs, ocCurrentParty());
 
 	//Allocate obliv score-values
 	obliv float *score = malloc(sizeof(obliv float)*Dn);
 
+	//Compute per document-vector the desm-score (in oblivious fashion)
 	for(i=0; i<Dn; i++){
 		score[i] = computeScore(Q, D[i], 200, Qn);
 	}
