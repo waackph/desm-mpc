@@ -3,8 +3,9 @@
 typedef struct{
 	size_t m;
 	size_t n;
+	void *vecs;
+	//float vecs[5][200];
 	float scores[5];
-	float vecs[5][200];
 } protocolIO;
 
 void desm(void* args);

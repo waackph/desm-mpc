@@ -43,7 +43,7 @@ for idx, d in enumerate(docs):
 	ds.append(d.tolist())
 
 
-scores = ffi.new("double["+str(Dn)+"]")
+scores = ffi.new("float["+str(Dn)+"]")
 
 lib.scores(q, ds, n, Qn, Dn, scores)
 

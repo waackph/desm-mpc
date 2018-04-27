@@ -6,7 +6,7 @@
 
 // Setup for each party: Arguments are the party, the document/word vectors, 
 // amount of Documents or Query-Words
-int * setup(int party, float vecs[][200], int amount, float scores[]){
+float * setup(int party, float vecs[][200], int amount, float scores[]){
 	if(party==1 | party==2){
 		//localhost: 127.0.0.1
 		const char *remote_host = "127.0.0.1";
@@ -32,23 +32,21 @@ int * setup(int party, float vecs[][200], int amount, float scores[]){
 		setCurrentParty(&pd, cp);
 
 		//Save the Input-vectors and the count to the struct shared with oblivc-Code
-
-		// T *p = malloc(sizeof(*p) * N) will allocate N instances of T
-		// T *p[10] = malloc(sizeof(*p) * N) will allocate N instances of T[200]
-		//float (*temp)[200] = malloc(sizeof(*temp) * amount);
-		for (int i = 0; i < amount; i++){
+		//NOT WORKING YET! HOW TO CORRECTLY SAVE ARRAYS IN STRUCT?
+		//memcpy(io->vecs, vecs, sizeof vecs);
+		//io.vecs = vecs;
+		//io.amount = amount;
+		//float *temp[200] = malloc(sizeof(float[amount][200]));
+		//assign values to the allocated array...
+		/*for (int i = 0; i < amount; i++){
 			for (int j = 0; j < 200; j++){
-				io.vecs[i][j] = vecs[i][j];
+				temp[i][j] = vecs[i][j];
 			}
-		}
-
+		}*/
+		float (*temp)[] = vecs;
 		io.m = amount;
 		io.n = 200;
-		//io.vecs = temp;
-
-		printf("\n\n%f\n\n", io.vecs[0][7]);
-		//printf("\n\n%f\n\n", temp[0][0]);
-		//printf("\n\n%f\n\n", tst);
+		io.array = temp;
 
 		//Start secure computation code here
 		execYaoProtocol(&pd, desm, &io);
@@ -59,9 +57,7 @@ int * setup(int party, float vecs[][200], int amount, float scores[]){
 
 		//Return the scores to python-reachable variable for party 2 (who provided the query)
 		if(party==2){
-			for (int i = 0; i < 5; i++){
-				scores[i] = io.scores[i];
-			}
+			scores = io.scores;
 		}
 		return 0;
 

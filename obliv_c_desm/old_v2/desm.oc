@@ -1,0 +1,140 @@
+#include<obliv.oh>
+#include<stdio.h>
+#include<math.h>
+
+#include"desm.h"
+
+
+void toObliv(int amount, obliv float ov[][200], float v[][200], int party){
+	int i, j;
+	for (i=0; i<amount; i++){
+		for (j=0; j<200; j++){
+			ov[i][j] = feedOblivFloat(v[i][j], party);
+		}
+	}
+}
+
+
+obliv float euclid(obliv float vec[200], int n){
+
+	//Initilize obliv variables
+	obliv float norm;
+	obliv float result;
+	//Initilize loop-helper
+	int i;
+
+	norm = 0;
+
+	for(i = 0; i < n; i = i+1){
+		norm = norm + vec[i]*vec[i];
+	}
+
+	return norm;
+}
+
+obliv float dotprod(obliv float vec1[200], obliv float vec2[200], int n){
+
+	//Initilize obliv variables
+	obliv float sum;
+	//Initilize loop-helper
+	int i;
+
+	sum = 0;
+
+	for(i = 0; i < n; i = i+1){
+		sum = sum + vec1[i]*vec2[i];
+	}
+
+	return sum;
+}
+
+obliv float computeCosine(obliv float query[200], obliv float doc[200], int n){
+
+	//Initilize obliv variables
+	obliv float dotDoc;
+	obliv float normDoc;
+	obliv float normQuery;
+	obliv float result;
+
+	dotDoc = dotprod(query, doc, n);
+	normDoc = euclid(doc, n);
+	normQuery = euclid(query, n);
+
+	result = dotDoc / normQuery * normDoc;
+
+	return result;
+}
+
+obliv float computeScore(obliv float Q[][200], obliv float D[200], int n, int Qn){
+
+	//Initilize obliv variables
+	obliv float newCosine;
+	obliv float cosine;
+	obliv float result;
+
+	//Initilize loop-helper
+	int i;
+
+	cosine = 0.0;
+
+	for(i = 0; i < Qn; i = i+1){
+		newCosine = computeCosine(Q[i], D, n);
+		cosine = cosine + newCosine;
+	}
+
+	result = cosine/Qn;
+
+	return result;
+}
+
+void desm(void* args){
+	protocolIO *io = (protocolIO*) args;
+
+	//Initilize & feed obliv variables
+
+	//Amount of Documents and Queries (stays constant)
+	//cant be obliv, because they are needed for several loops
+	const int Dm;
+	const int Qm;
+	const int n;
+	//Helper variable for loops 
+	int i;
+
+	Dm = ocBroadcastInt(io->m, 1);
+
+	Qm = ocBroadcastInt(io->m, 2);
+
+	n = io->n;
+
+	//allocate the 2-dim. Vector-Arrays (Documents, Queries) (Dn*200) need to be obliv!
+	obliv float *D[Dm];
+	obliv float *Q[Qm];
+
+	for (i = 0; i<Dm; i++){
+		D[i] = malloc(sizeof(obliv float) * n);
+	}
+
+	for (i = 0; i<Qm; i++){
+		Q[i] = malloc(sizeof(obliv float) * n);
+	}
+
+	float (*temp)[200] = io->vecs;
+
+	//convert the 2-Dim. Arrays of the structs to obliv Arrays
+	toObliv(Dm, D, temp, 1);
+	toObliv(Qm, Q, temp, 2);
+
+	//Allocate obliv score-values
+	obliv float *score = malloc(sizeof(obliv float)*Dm);
+
+	//Compute per document-vector the desm-score (in oblivious fashion)
+	for(i=0; i<Dm; i++){
+		score[i] = computeScore(Q, D[i], 200, Qm);
+	}
+
+	//Reveal the scores to the 2. Party which provided the query
+	for (i = 0; i<Dm; i++){
+		revealOblivFloat(&io->scores[i], score[i], 2);
+	}
+
+}

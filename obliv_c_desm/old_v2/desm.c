@@ -33,25 +33,35 @@ int * setup(int party, float vecs[][200], int amount, float scores[]){
 
 		//Save the Input-vectors and the count to the struct shared with oblivc-Code
 
+		//float *temp[200] = malloc(sizeof(float[amount][200]));
+		//assign values to the allocated array...
+		/*for (int i = 0; i < amount; i++){
+			for (int j = 0; j < 200; j++){
+				temp[i][j] = vecs[i][j];
+			}
+		}*/
+		
 		// T *p = malloc(sizeof(*p) * N) will allocate N instances of T
 		// T *p[10] = malloc(sizeof(*p) * N) will allocate N instances of T[200]
-		//float (*temp)[200] = malloc(sizeof(*temp) * amount);
+		// 
+		float (*temp)[200] = malloc(sizeof(*temp) * amount);
 		for (int i = 0; i < amount; i++){
 			for (int j = 0; j < 200; j++){
-				io.vecs[i][j] = vecs[i][j];
+				temp[i][j] = vecs[i][j];
 			}
 		}
 
 		io.m = amount;
 		io.n = 200;
-		//io.vecs = temp;
+		io.vecs = temp;
+		//float tst = io.vecs[0][0];
 
-		printf("\n\n%f\n\n", io.vecs[0][7]);
-		//printf("\n\n%f\n\n", temp[0][0]);
+		printf("\n\n%f\n\n", vecs[0][0]);
+		printf("\n\n%f\n\n", temp[0][0]);
 		//printf("\n\n%f\n\n", tst);
 
 		//Start secure computation code here
-		execYaoProtocol(&pd, desm, &io);
+		//execYaoProtocol(&pd, desm, &io);
 
 		//clean project
 		cleanupProtocol(&pd);
@@ -59,9 +69,8 @@ int * setup(int party, float vecs[][200], int amount, float scores[]){
 
 		//Return the scores to python-reachable variable for party 2 (who provided the query)
 		if(party==2){
-			for (int i = 0; i < 5; i++){
-				scores[i] = io.scores[i];
-			}
+			//scores = io.scores;
+			printf("Party 2\n");
 		}
 		return 0;
 
