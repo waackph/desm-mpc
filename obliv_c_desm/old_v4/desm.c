@@ -1,28 +1,8 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include<math.h>
-
 #include<obliv.h>
 
 #include"desm.h"
-
-//Compute euclidean norm locally (called in oc-File)
-float euclid(float *vec, int n){
-
-	//Initilize obliv variables
-	float norm;
-	float result;
-	//Initilize loop-helper
-	int i;
-
-	norm = 0;
-
-	for(i = 0; i < n; i = i+1){
-		norm = norm + vec[i]*vec[i];
-	}
-
-	return sqrt(norm);
-}
 
 // Setup for each party: Arguments are the party, the document/word vectors, 
 // amount of Documents or Query-Words

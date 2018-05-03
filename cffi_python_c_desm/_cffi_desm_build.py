@@ -13,8 +13,8 @@ r"""
 		for(i = 0; i < n; i = i+1){
 			norm = norm + vec[i]*vec[i];
 		}
-		//return sqrt(norm);
-		return norm;
+
+		return sqrt(norm);
 	}
 
 	float dotprod(float vec1[200], float vec2[200], int n){
@@ -28,15 +28,13 @@ r"""
 		return sum;
 	}
 
-	float computeCosine(float query[200], float doc[200], int n){
+	float computeCosine(float query[200], float doc[200], int n, float normQuery, float normDoc){
 		float dotDoc = dotprod(query, doc, n);
-		float normDoc = euclid(doc, n);
-		float normQuery = euclid(query, n);
 		//printf("%f\n%f\n%f\n", dotDoc, normDoc, normQuery);
 		return dotDoc / normQuery * normDoc;
 	}
 
-	float desm(float Q[][200], float D[200], int n, int Qn){
+	float desm(float Q[][200], float D[200], int n, int Qn, float normQuerys[], float normDoc){
 		//int Qn = sizeof(Q)/sizeof(float);
 		int i;
 		float newCosine;
@@ -44,7 +42,7 @@ r"""
 		//printf("%d\n", n);
 		//printf("%d\n", Qn);
 		for(i = 0; i < Qn; i = i+1){
-			newCosine = computeCosine(Q[i], D, n);
+			newCosine = computeCosine(Q[i], D, n, normQuerys[i], normDoc);
 			cosine = cosine + newCosine;
 		}
 		return cosine/Qn;
@@ -53,8 +51,20 @@ r"""
 	//args: queries as word-vectors, documents as word-vectors, len(word-vec), amount queries, amount Docs
 	float * scores(float Q[][200], float Docs[][200], int n, int Qn, int Dn, float score[]){
 		int i;
-		for(i=0; i<Dn; i = i+1){
-			score[i] = desm(Q, Docs[i], n, Qn);
+		
+		float normQuerys[Qn];
+		float normDocs[Dn];
+
+		for(i=0; i<Qn; i++){
+			normQuerys[i] = euclid(Q[i], n);
+		}
+
+		for(i=0; i<Dn; i++){
+			normDocs[i] = euclid(Docs[i], n);
+		}
+
+		for(i=0; i<Dn; i++){
+			score[i] = desm(Q, Docs[i], n, Qn, normQuerys, normDocs[i]);
 		}
 		return score;
 	}
@@ -68,9 +78,9 @@ ffibuilder.cdef("""
 
 	float dotprod(float vec1[200], float vec2[200], int n);
 
-	float computeCosine(float query[200], float doc[200], int n);
+	float computeCosine(float query[200], float doc[200], int n, float normQuery, float normDoc);
 
-	float desm(float Q[][200], float D[200], int n, int Qn);
+	float desm(float Q[][200], float D[200], int n, int Qn, float normQuerys[], float normDoc);
 """)
 
 if __name__ == "__main__":

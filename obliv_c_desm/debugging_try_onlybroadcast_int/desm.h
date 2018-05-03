@@ -11,4 +11,4 @@ void desm(void* args);
 
 int * setup(int party, float vecs[][200], int amount, float scores[]);
 
-float euclid(float *vec, int n);
+long euclid(long *vec, int n);

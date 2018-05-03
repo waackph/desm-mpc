@@ -1,8 +1,26 @@
 #include<obliv.oh>
 #include<stdio.h>
+#include<math.h>
 
 #include"desm.h"
 
+
+obliv float euclid(obliv float *vec, int n){
+
+	//Initilize obliv variables
+	obliv float norm;
+	obliv float result;
+	//Initilize loop-helper
+	int i;
+
+	norm = 0;
+
+	for(i = 0; i < n; i = i+1){
+		norm = norm + vec[i]*vec[i];
+	}
+
+	return norm;
+}
 
 obliv float dotprod(obliv float *vec1, obliv float *vec2, int n){
 
@@ -20,20 +38,24 @@ obliv float dotprod(obliv float *vec1, obliv float *vec2, int n){
 	return sum;
 }
 
-obliv float computeCosine(obliv float *query, obliv float *doc, int n, obliv float normQ, obliv float normD){
+obliv float computeCosine(obliv float *query, obliv float *doc, int n){
 
 	//Initilize obliv variables
 	obliv float dotDoc;
+	obliv float normDoc;
+	obliv float normQuery;
 	obliv float result;
 
 	dotDoc = dotprod(query, doc, n);
+	normDoc = euclid(doc, n);
+	normQuery = euclid(query, n);
 
-	result = dotDoc / normQ * normD;
+	result = dotDoc / normQuery * normDoc;
 
 	return result;
 }
 
-obliv float computeScore(obliv float **Q, obliv float *D, int n, int Qn, obliv float *normQ, obliv float normD){
+obliv float computeScore(obliv float **Q, obliv float *D, int n, int Qn){
 
 	//Initilize obliv variables
 	obliv float newCosine;
@@ -46,7 +68,7 @@ obliv float computeScore(obliv float **Q, obliv float *D, int n, int Qn, obliv f
 	cosine = 0.0;
 
 	for(i = 0; i < Qn; i = i+1){
-		newCosine = computeCosine(Q[i], D, n, normQ[i], normD);
+		newCosine = computeCosine(Q[i], D, n);
 		cosine = cosine + newCosine;
 	}
 
@@ -72,23 +94,7 @@ void toObliv(int amount, obliv float **ov, float **o, int party){
 		printf("\n%d\n", i);
 		for (j=0; j<200; j++){
 			ov[i][j] = feedOblivFloat(o[i][j], party);
-			//try revealing first item here
-			if(party == 1 && j == 0 && i == 0){
-				float testval = 0.1;
-				printf("\n%f\n", testval);
-				printf("\n%f\n", o[i][j]);
-				revealOblivFloat(&testval, ov[0][0], 1);
-				printf("\n\n%f\n\n", testval);
-			}
-			
 		}
-	}
-}
-
-void euclidToObliv(int amount, obliv float *ov, float *o, int party){
-	int i;
-	for(i=0; i<amount; i++){
-		ov[i] = feedOblivFloat(o[i], party);
 	}
 }
 
@@ -106,9 +112,12 @@ void desm(void* args){
 	int i;
 
 	Dm = ocBroadcastInt(io->m, 1);
+
 	Qm = ocBroadcastInt(io->m, 2);
-	n = io->n;
+
 	printf("\n%d\n", Qm);
+
+	n = io->n;
 
 	//allocate the 2-dim. Vector-Arrays (Documents, Queries), need to be obliv!
 	
@@ -117,7 +126,6 @@ void desm(void* args){
 	for(i=0; i<5; i++){
 		Dt[i] = malloc(200*sizeof(float));
 	}
-
 	float **Qt = malloc(1*sizeof(float*));
 	for(i=0; i<1; i++){
 		Qt[i] = malloc(200*sizeof(float));
@@ -131,12 +139,6 @@ void desm(void* args){
 	for(i=0; i<1; i++){
 		Q[i] = malloc(200*sizeof(obliv float));
 	}
-
-	//Allocate memory to compute/save the euclidean distances locally
-	float *normDt = malloc(5*sizeof(float));
-	float *normQt = malloc(1*sizeof(float));
-	obliv float *normD = malloc(5*sizeof(obliv float));
-	obliv float *normQ = malloc(1*sizeof(obliv float));
 
 	//Print an item from the query or document matrix (depending on party) (for debugging)
 	printf("\n\n%f\n\n", io->vecs[0][7]);
@@ -154,20 +156,13 @@ void desm(void* args){
 	}
 
 	//Use the locally assigned data to assign it to obliv array (using pointers)
-	toObliv(Dm, D, Dt, 1);
-	toObliv(Qm, Q, Qt, 2);
-
-	//Compute euclidean distances locally
-	for(i=0; i<Qm; i++){
-		normQt[i] = euclid(Qt[i], n);
-	}
-	for(i=0; i<Dm; i++){
-		normDt[i] = euclid(Dt[i], n);
+	if(ocCurrentParty()==1){
+		toObliv(Dm, D, Dt, 1);
 	}
 
-	//Distribute locally data obliviously
-	euclidToObliv(Dm, normD, normDt, 1);
-	euclidToObliv(Qm, normQ, normQt, 2);
+	if(ocCurrentParty()==2){
+		toObliv(Qm, Q, Qt, 2);
+	}
 
 	//Initilize, assign and print the first item of the Document-Matrix (for debugging)
 	float testval = 0.1;
@@ -176,14 +171,16 @@ void desm(void* args){
 
 	revealOblivFloat(&testval, D[0][0], 1);
 
-	printf("\n\n%f\n\n", testval);
+	if(ocCurrentParty()==1){
+		printf("\n\n%f\n\n", testval);
+	}
 
 	//Allocate obliv score-values
 	obliv float *score = malloc(sizeof(obliv float) * Dm);
 
 	//Compute (per document-vector) the desm-score (in oblivious fashion)
 	for(i=0; i<Dm; i++){
-		score[i] = computeScore(Q, D[i], 200, Qm, normQ, normD[i]);
+		score[i] = computeScore(Q, D[i], 200, Qm);
 	}
 
 	//Reveal the scores to the 2. Party which provided the query

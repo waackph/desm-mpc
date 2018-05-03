@@ -501,7 +501,7 @@ static void (*_cffi_call_python_org)(struct _cffi_externpy_s *, char *);
 			norm = norm + vec[i]*vec[i];
 		}
 		//return sqrt(norm);
-		return norm;
+		return sqrt(norm);
 	}
 
 	float dotprod(float vec1[200], float vec2[200], int n){
@@ -515,15 +515,13 @@ static void (*_cffi_call_python_org)(struct _cffi_externpy_s *, char *);
 		return sum;
 	}
 
-	float computeCosine(float query[200], float doc[200], int n){
+	float computeCosine(float query[200], float doc[200], int n, float normQuery, float normDoc){
 		float dotDoc = dotprod(query, doc, n);
-		float normDoc = euclid(doc, n);
-		float normQuery = euclid(query, n);
 		//printf("%f\n%f\n%f\n", dotDoc, normDoc, normQuery);
 		return dotDoc / normQuery * normDoc;
 	}
 
-	float desm(float Q[][200], float D[200], int n, int Qn){
+	float desm(float Q[][200], float D[200], int n, int Qn, float normQuerys[], float normDoc){
 		//int Qn = sizeof(Q)/sizeof(float);
 		int i;
 		float newCosine;
@@ -531,7 +529,7 @@ static void (*_cffi_call_python_org)(struct _cffi_externpy_s *, char *);
 		//printf("%d\n", n);
 		//printf("%d\n", Qn);
 		for(i = 0; i < Qn; i = i+1){
-			newCosine = computeCosine(Q[i], D, n);
+			newCosine = computeCosine(Q[i], D, n, normQuerys[i], normDoc);
 			cosine = cosine + newCosine;
 		}
 		return cosine/Qn;
@@ -540,8 +538,20 @@ static void (*_cffi_call_python_org)(struct _cffi_externpy_s *, char *);
 	//args: queries as word-vectors, documents as word-vectors, len(word-vec), amount queries, amount Docs
 	float * scores(float Q[][200], float Docs[][200], int n, int Qn, int Dn, float score[]){
 		int i;
-		for(i=0; i<Dn; i = i+1){
-			score[i] = desm(Q, Docs[i], n, Qn);
+		
+		float normQuerys[Qn];
+		float normDocs[Dn];
+
+		for(i=0; i<Qn; i++){
+			normQuerys[i] = euclid(Q[i], n);
+		}
+
+		for(i=0; i<Dn; i++){
+			normDocs[i] = euclid(Docs[i], n);
+		}
+
+		for(i=0; i<Dn; i++){
+			score[i] = desm(Q, Docs[i], n, Qn, normQuerys, normDocs[i]);
 		}
 		return score;
 	}
@@ -551,36 +561,44 @@ static void (*_cffi_call_python_org)(struct _cffi_externpy_s *, char *);
 
 static void *_cffi_types[] = {
 /*  0 */ _CFFI_OP(_CFFI_OP_FUNCTION, 6), // float *()(float(*)[200], float(*)[200], int, int, int, float *)
-/*  1 */ _CFFI_OP(_CFFI_OP_POINTER, 24), // float(*)[200]
+/*  1 */ _CFFI_OP(_CFFI_OP_POINTER, 32), // float(*)[200]
 /*  2 */ _CFFI_OP(_CFFI_OP_NOOP, 1),
 /*  3 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7), // int
 /*  4 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
 /*  5 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/*  6 */ _CFFI_OP(_CFFI_OP_POINTER, 23), // float *
+/*  6 */ _CFFI_OP(_CFFI_OP_POINTER, 17), // float *
 /*  7 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
-/*  8 */ _CFFI_OP(_CFFI_OP_FUNCTION, 23), // float()(float *, float *, int)
+/*  8 */ _CFFI_OP(_CFFI_OP_FUNCTION, 17), // float()(float *, float *, int)
 /*  9 */ _CFFI_OP(_CFFI_OP_NOOP, 6),
 /* 10 */ _CFFI_OP(_CFFI_OP_NOOP, 6),
 /* 11 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
 /* 12 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
-/* 13 */ _CFFI_OP(_CFFI_OP_FUNCTION, 23), // float()(float *, int)
+/* 13 */ _CFFI_OP(_CFFI_OP_FUNCTION, 17), // float()(float *, float *, int, float, float)
 /* 14 */ _CFFI_OP(_CFFI_OP_NOOP, 6),
-/* 15 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/* 16 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
-/* 17 */ _CFFI_OP(_CFFI_OP_FUNCTION, 23), // float()(float(*)[200], float *, int, int)
-/* 18 */ _CFFI_OP(_CFFI_OP_NOOP, 1),
-/* 19 */ _CFFI_OP(_CFFI_OP_NOOP, 6),
-/* 20 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/* 21 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/* 22 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
-/* 23 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 13), // float
-/* 24 */ _CFFI_OP(_CFFI_OP_ARRAY, 23), // float[200]
-/* 25 */ (_cffi_opcode_t)(200),
+/* 15 */ _CFFI_OP(_CFFI_OP_NOOP, 6),
+/* 16 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
+/* 17 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 13), // float
+/* 18 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 13),
+/* 19 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
+/* 20 */ _CFFI_OP(_CFFI_OP_FUNCTION, 17), // float()(float *, int)
+/* 21 */ _CFFI_OP(_CFFI_OP_NOOP, 6),
+/* 22 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
+/* 23 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
+/* 24 */ _CFFI_OP(_CFFI_OP_FUNCTION, 17), // float()(float(*)[200], float *, int, int, float *, float)
+/* 25 */ _CFFI_OP(_CFFI_OP_NOOP, 1),
+/* 26 */ _CFFI_OP(_CFFI_OP_NOOP, 6),
+/* 27 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
+/* 28 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
+/* 29 */ _CFFI_OP(_CFFI_OP_NOOP, 6),
+/* 30 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 13),
+/* 31 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
+/* 32 */ _CFFI_OP(_CFFI_OP_ARRAY, 17), // float[200]
+/* 33 */ (_cffi_opcode_t)(200),
 };
 
-static float _cffi_d_computeCosine(float * x0, float * x1, int x2)
+static float _cffi_d_computeCosine(float * x0, float * x1, int x2, float x3, float x4)
 {
-  return computeCosine(x0, x1, x2);
+  return computeCosine(x0, x1, x2, x3, x4);
 }
 #ifndef PYPY_VERSION
 static PyObject *
@@ -589,13 +607,17 @@ _cffi_f_computeCosine(PyObject *self, PyObject *args)
   float * x0;
   float * x1;
   int x2;
+  float x3;
+  float x4;
   Py_ssize_t datasize;
   float result;
   PyObject *arg0;
   PyObject *arg1;
   PyObject *arg2;
+  PyObject *arg3;
+  PyObject *arg4;
 
-  if (!PyArg_UnpackTuple(args, "computeCosine", 3, 3, &arg0, &arg1, &arg2))
+  if (!PyArg_UnpackTuple(args, "computeCosine", 5, 5, &arg0, &arg1, &arg2, &arg3, &arg4))
     return NULL;
 
   datasize = _cffi_prepare_pointer_call_argument(
@@ -624,9 +646,17 @@ _cffi_f_computeCosine(PyObject *self, PyObject *args)
   if (x2 == (int)-1 && PyErr_Occurred())
     return NULL;
 
+  x3 = (float)_cffi_to_c_float(arg3);
+  if (x3 == (float)-1 && PyErr_Occurred())
+    return NULL;
+
+  x4 = (float)_cffi_to_c_float(arg4);
+  if (x4 == (float)-1 && PyErr_Occurred())
+    return NULL;
+
   Py_BEGIN_ALLOW_THREADS
   _cffi_restore_errno();
-  { result = computeCosine(x0, x1, x2); }
+  { result = computeCosine(x0, x1, x2, x3, x4); }
   _cffi_save_errno();
   Py_END_ALLOW_THREADS
 
@@ -637,9 +667,9 @@ _cffi_f_computeCosine(PyObject *self, PyObject *args)
 #  define _cffi_f_computeCosine _cffi_d_computeCosine
 #endif
 
-static float _cffi_d_desm(float(* x0)[200], float * x1, int x2, int x3)
+static float _cffi_d_desm(float(* x0)[200], float * x1, int x2, int x3, float * x4, float x5)
 {
-  return desm(x0, x1, x2, x3);
+  return desm(x0, x1, x2, x3, x4, x5);
 }
 #ifndef PYPY_VERSION
 static PyObject *
@@ -649,14 +679,18 @@ _cffi_f_desm(PyObject *self, PyObject *args)
   float * x1;
   int x2;
   int x3;
+  float * x4;
+  float x5;
   Py_ssize_t datasize;
   float result;
   PyObject *arg0;
   PyObject *arg1;
   PyObject *arg2;
   PyObject *arg3;
+  PyObject *arg4;
+  PyObject *arg5;
 
-  if (!PyArg_UnpackTuple(args, "desm", 4, 4, &arg0, &arg1, &arg2, &arg3))
+  if (!PyArg_UnpackTuple(args, "desm", 6, 6, &arg0, &arg1, &arg2, &arg3, &arg4, &arg5))
     return NULL;
 
   datasize = _cffi_prepare_pointer_call_argument(
@@ -689,9 +723,24 @@ _cffi_f_desm(PyObject *self, PyObject *args)
   if (x3 == (int)-1 && PyErr_Occurred())
     return NULL;
 
+  datasize = _cffi_prepare_pointer_call_argument(
+      _cffi_type(6), arg4, (char **)&x4);
+  if (datasize != 0) {
+    if (datasize < 0)
+      return NULL;
+    x4 = (float *)alloca((size_t)datasize);
+    memset((void *)x4, 0, (size_t)datasize);
+    if (_cffi_convert_array_from_object((char *)x4, _cffi_type(6), arg4) < 0)
+      return NULL;
+  }
+
+  x5 = (float)_cffi_to_c_float(arg5);
+  if (x5 == (float)-1 && PyErr_Occurred())
+    return NULL;
+
   Py_BEGIN_ALLOW_THREADS
   _cffi_restore_errno();
-  { result = desm(x0, x1, x2, x3); }
+  { result = desm(x0, x1, x2, x3, x4, x5); }
   _cffi_save_errno();
   Py_END_ALLOW_THREADS
 
@@ -892,10 +941,10 @@ _cffi_f_scores(PyObject *self, PyObject *args)
 #endif
 
 static const struct _cffi_global_s _cffi_globals[] = {
-  { "computeCosine", (void *)_cffi_f_computeCosine, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 8), (void *)_cffi_d_computeCosine },
-  { "desm", (void *)_cffi_f_desm, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 17), (void *)_cffi_d_desm },
+  { "computeCosine", (void *)_cffi_f_computeCosine, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 13), (void *)_cffi_d_computeCosine },
+  { "desm", (void *)_cffi_f_desm, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 24), (void *)_cffi_d_desm },
   { "dotprod", (void *)_cffi_f_dotprod, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 8), (void *)_cffi_d_dotprod },
-  { "euclid", (void *)_cffi_f_euclid, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 13), (void *)_cffi_d_euclid },
+  { "euclid", (void *)_cffi_f_euclid, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 20), (void *)_cffi_d_euclid },
   { "scores", (void *)_cffi_f_scores, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 0), (void *)_cffi_d_scores },
 };
 
@@ -911,7 +960,7 @@ static const struct _cffi_type_context_s _cffi_type_context = {
   0,  /* num_enums */
   0,  /* num_typenames */
   NULL,  /* no includes */
-  26,  /* num_types */
+  34,  /* num_types */
   0,  /* flags */
 };
 

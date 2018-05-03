@@ -7,11 +7,11 @@
 #include"desm.h"
 
 //Compute euclidean norm locally (called in oc-File)
-float euclid(float *vec, int n){
+long euclid(long *vec, int n){
 
 	//Initilize obliv variables
-	float norm;
-	float result;
+	long norm;
+	long result;
 	//Initilize loop-helper
 	int i;
 

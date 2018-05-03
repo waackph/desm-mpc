@@ -39,8 +39,14 @@ float desm(float Q[][3], float D[3], int n, int Qn){
 	int i;
 	float newCosine;
 	float cosine = 0.0;
+	float normDocs[3];
+	float normQueries[3];
+	for(..){
+		normDocs[i] = euclid(doc, n);
+		normQuerys[i] = euclid(query, n);
+	}
 	for(i = 0; i < Qn; i = i+1){
-		newCosine = computeCosine(Q[i], D, n);
+		newCosine = computeCosine(Q[i], D, n, normDocs, normQuerys);
 		cosine = cosine + newCosine;
 	}
 	return cosine;
