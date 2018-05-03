@@ -55,50 +55,45 @@ obliv float computeScore(obliv float **Q, obliv float *D, int n, int Qn, obliv f
 	return result;
 }
 
-void load_data(protocolIO *io, float **T, int amount){
-	int k, l;
-	for (k=0; k<amount; k++){
-		printf("\n%d\n", k);
-		for (l=0; l<200; l++){
-			T[k][l] = io->vecs[k][l];
-		}
-	}
-}
-
-void toObliv(int amount, obliv float **ov, float **o, int party){
+void load_data(protocolIO *io, float **v, int amount, int n){
 	int i, j;
-	printf("\n%d\n", party);
-	for (i=0; i<amount; i++){
-		printf("\n%d\n", i);
-		for (j=0; j<200; j++){
-			ov[i][j] = feedOblivFloat(o[i][j], party);
-			//try revealing first item here
-			if(party == 1 && j == 0 && i == 0){
-				float testval = 0.1;
-				printf("\n%f\n", testval);
-				printf("\n%f\n", o[i][j]);
-				revealOblivFloat(&testval, ov[0][0], 1);
-				printf("\n\n%f\n\n", testval);
-			}
-			
+	for (i=0; i < amount; i++){
+		for (j=0; j<n; j++){
+			v[i][j] = io->vecs[i][j];
 		}
 	}
 }
 
-void euclidToObliv(int amount, obliv float *ov, float *o, int party){
+void toObliv2d(int amount, int n, obliv float **ov, float **v, int party){
+	int i, j;
+	printf("\ntoObliv2d Party: %d\n", party);
+	for (i=0; i<amount; i++){
+		for (j=0; j<n; j++){
+			ov[i][j] = feedOblivFloat(v[i][j], party);
+		}
+	}
+}
+
+void toObliv1d(int amount, obliv float *ov, float *v, int party){
 	int i;
+	printf("\ntoObliv1d Party: %d\n", party);
 	for(i=0; i<amount; i++){
-		ov[i] = feedOblivFloat(o[i], party);
+		ov[i] = feedOblivFloat(v[i], party);
 	}
 }
 
 void desm(void* args){
+
+	//Get the data from the C-Code
 	protocolIO *io = (protocolIO*) args;
 
-	//Initilize & feed obliv variables
+	//Initilize & distribute global variables (amount Documents, amount Queries)
 
 	//Amount of Documents and Queries (stays constant)
 	//cant be obliv, because they are needed for several loops
+
+	printf("\n-----initilize constants-----\n");
+
 	const int Dm;
 	const int Qm;
 	const int n;
@@ -108,54 +103,54 @@ void desm(void* args){
 	Dm = ocBroadcastInt(io->m, 1);
 	Qm = ocBroadcastInt(io->m, 2);
 	n = io->n;
-	printf("\n%d\n", Qm);
+
 
 	//allocate the 2-dim. Vector-Arrays (Documents, Queries), need to be obliv!
 	
 	//After many different apporaches I am (for now) using a Double-pointer
-	float **Dt = malloc(5*sizeof(float*));
-	for(i=0; i<5; i++){
-		Dt[i] = malloc(200*sizeof(float));
+	float **Dt = malloc(Dm*sizeof(float*));
+	for(i=0; i<Dm; i++){
+		Dt[i] = malloc(n*sizeof(float));
 	}
 
-	float **Qt = malloc(1*sizeof(float*));
-	for(i=0; i<1; i++){
-		Qt[i] = malloc(200*sizeof(float));
+	float **Qt = malloc(Qm*sizeof(float*));
+	for(i=0; i<Qm; i++){
+		Qt[i] = malloc(n*sizeof(float));
 	}
 
-	obliv float **D = malloc(5*sizeof(obliv float*));
-	for(i=0; i<5; i++){
-		D[i] = malloc(200*sizeof(obliv float));
+	obliv float **D = malloc(Dm*sizeof(obliv float*));
+	for(i=0; i<Dm; i++){
+		D[i] = malloc(n*sizeof(obliv float));
 	}
-	obliv float **Q = malloc(1*sizeof(obliv float*));
-	for(i=0; i<1; i++){
-		Q[i] = malloc(200*sizeof(obliv float));
+	obliv float **Q = malloc(Qm*sizeof(obliv float*));
+	for(i=0; i<Qm; i++){
+		Q[i] = malloc(n*sizeof(obliv float));
 	}
 
 	//Allocate memory to compute/save the euclidean distances locally
-	float *normDt = malloc(5*sizeof(float));
-	float *normQt = malloc(1*sizeof(float));
-	obliv float *normD = malloc(5*sizeof(obliv float));
-	obliv float *normQ = malloc(1*sizeof(obliv float));
+	float *normDt = malloc(Dm*sizeof(float));
+	float *normQt = malloc(Qm*sizeof(float));
+	obliv float *normD = malloc(Dm*sizeof(obliv float));
+	obliv float *normQ = malloc(Qm*sizeof(obliv float));
 
-	//Print an item from the query or document matrix (depending on party) (for debugging)
-	printf("\n\n%f\n\n", io->vecs[0][7]);
 
 	//convert the 2-Dim. Arrays of the structs to obliv Arrays
 
+	printf("\n-----load data-----\n");
+
 	//assign the data locally (for testing purposes)	
 	if(ocCurrentParty()==1){
-		load_data(io, Dt, Dm);
-		printf("\n\n%f\n\n", Dt[0][7]);
+		load_data(io, Dt, Dm, n);
 	}
 	if(ocCurrentParty()==2){
-		load_data(io, Qt, Qm);
-		printf("\n\n%f\n\n", Qt[0][7]);
+		load_data(io, Qt, Qm, n);
 	}
 
+	printf("\n-----distribute data-----\n");
+
 	//Use the locally assigned data to assign it to obliv array (using pointers)
-	toObliv(Dm, D, Dt, 1);
-	toObliv(Qm, Q, Qt, 2);
+	toObliv2d(Dm, n, D, Dt, 1);
+	toObliv2d(Qm, n, Q, Qt, 2);
 
 	//Compute euclidean distances locally
 	for(i=0; i<Qm; i++){
@@ -165,18 +160,16 @@ void desm(void* args){
 		normDt[i] = euclid(Dt[i], n);
 	}
 
+	printf("\n-----distribute norm-----\n");
+
 	//Distribute locally data obliviously
-	euclidToObliv(Dm, normD, normDt, 1);
-	euclidToObliv(Qm, normQ, normQt, 2);
+	toObliv1d(Dm, normD, normDt, 1);
+	toObliv1d(Qm, normQ, normQt, 2);
 
-	//Initilize, assign and print the first item of the Document-Matrix (for debugging)
-	float testval = 0.1;
 
-	printf("\n%f\n", testval);
+	//Compute Scores
 
-	revealOblivFloat(&testval, D[0][0], 1);
-
-	printf("\n\n%f\n\n", testval);
+	printf("\n-----Compute Scores-----\n");
 
 	//Allocate obliv score-values
 	obliv float *score = malloc(sizeof(obliv float) * Dm);
@@ -185,6 +178,8 @@ void desm(void* args){
 	for(i=0; i<Dm; i++){
 		score[i] = computeScore(Q, D[i], 200, Qm, normQ, normD[i]);
 	}
+
+	printf("\n-----Reveal Scores-----\n");
 
 	//Reveal the scores to the 2. Party which provided the query
 	for (i = 0; i<Dm; i++){
