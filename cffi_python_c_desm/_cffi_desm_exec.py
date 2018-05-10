@@ -1,53 +1,72 @@
 from _cffi_desm import ffi, lib
 import pickle
 import numpy as np
-import extract_word_embedds as ewe
+import sys
+import extract_word_embedds as extract
+import time
 ##################################
 
-m_path = "/home/phil/Schreibtisch/Uni/MA/Forschungsprojekt/data.txt"
-outemb_path = '/home/phil/Schreibtisch/Uni/MA/Forschungsprojekt/out.txt'
-inemb_path = '/home/phil/Schreibtisch/Uni/MA/Forschungsprojekt/in.txt'
+# command: python3 _cffi_desm_exec.py ../../data/data.txt "cambridge"
 
-'''
-docs = ewe.get_doc_embedds(m_path, 5, outemb_path)
+# Measure runtime of processing steps
+start_time = time.time()
 
-q = ewe.get_query_embedds("cambridge", inemb_path)[0]
 
-#save embeddings for debugging purposes
-with open('doc_embedds.obj', 'wb') as f:
-	pickle.dump(docs, f)
+########## Initilize global Variables
 
-with open('query_embedds.obj', 'wb') as f:
-	pickle.dump(q, f)
-'''
+docs_path = sys.argv[1]
+query_str = sys.argv[2]
 
-with open('doc_embedds.obj', 'rb') as f:
-	docs = pickle.load(f)
+#amount of top-ranked documents
+top_n = 2
 
-with open('query_embedds.obj', 'rb') as f:
-	q = pickle.load(f)
+model_dir = "../../model/"
+has_model_idx = True
 
-doc_title = ['Cambridge', 'Oxford', 'Giraffes', 'Giraffes_switched', 'Cambridge_switched', 'query']
 
-#amount of Query-words (or queries?)
-Qn = 1
-#transform queries to lists
-q = [q[0].tolist()]
-#amount of word-vector-items
-n = 200
-#amount of Documents
-Dn = len(docs)
+########## Initilize Word-Vectors and compute Document-Centroids
+
+print("Retrieve word-vectors and compute document vectors")
+
+doc_vecs = extract.get_doc_embedds(docs_path, model_dir, has_model_idx)
 ds = []
 #transform documents to lists
-for idx, d in enumerate(docs):
+for idx, d in enumerate(doc_vecs):
 	ds.append(d.tolist())
 
+query_vecs = extract.get_query_embedds(query_str, model_dir, has_model_idx)[0]
+qs = []
+#transform query-words to lists
+for idx, q in enumerate(query_vecs):
+	qs.append(q.tolist())
 
-scores = ffi.new("float["+str(Dn)+"]")
+titles = extract.get_titles(docs_path)
 
-lib.scores(q, ds, n, Qn, Dn, scores)
+Dm = len(ds)
+Qm = len(qs)
+n = len(ds[0])
 
-for idx, score in enumerate(scores):
-	print(doc_title[idx], str(score), '\n')
+print("-- [python] Whole Initilization for C-Program: %s seconds --" % (time.time() - start_time))
+
+
+########## C Initilization and Execution
+
+c_start_time = time.time()
+
+print("Begin C-Score Computation")
+
+scores = ffi.new("int[%d]" % top_n)
+
+lib.scores(qs, ds, n, Qm, Dm, scores, top_n)
+
+print("-- [python] C-Program runtime: %s seconds --" % (time.time() - c_start_time))
+
+########## Output
+
+for idx in scores:
+	print(str(idx), titles[idx])
+
+
+print("-- [python] Whole runtime: %s seconds --" % (time.time() - start_time))
 
 ##################################

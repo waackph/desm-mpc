@@ -1,0 +1,1119 @@
+---------------Cambridge-Example
+Global settings: model: ../../model/, index: True
+
+--------------------------------
+Test settings: Query: cambridge, data: ../../data/data2d.txt
+
+C-Program:
+Retrieve word-vectors and compute document vectors
+-- [docs] Preprocessing: 0.04019927978515625 seconds --
+-- [docs] Retrieve word-vectors: 3.2877726554870605 seconds --
+-- [docs] Compute Centroids: 0.06703615188598633 seconds --
+q-- [query] Preprocess & Retrieve word-vectors: 3.1708765029907227 seconds --
+-- [query] Extract doc. titles: 0.002431154251098633 seconds --
+-- [python] Whole Initilization for C-Program: 9.84490704536438 seconds --
+Begin C-Score Computation
+Allocating Memory..
+Computing Scores..
+-- [C] compute Query norms: 0.000003 seconds --
+-- [C] compute Doc norms: 0.000002 seconds --
+-- [C] compute Rankings: 0.000003 seconds --
+Sorting ranks..
+-- [C] sort rankings: 0.000004 seconds --
+Score: -0.042812
+Score: -0.048884
+Done!
+
+-- [C] Whole runtime: 0.000119 seconds --
+-- [python] C-Program runtime: 0.0002384185791015625 seconds --
+0 Cambridge
+1 Oxford
+-- [python] Whole runtime: 9.845261335372925 seconds --
+
+Oblivc-Program:
+PARTY 1
+Retrieve word-vectors and compute document vectors
+-- [docs] Preprocessing: 0.04235363006591797 seconds --
+-- [docs] Retrieve word-vectors: 3.5111608505249023 seconds --
+-- [docs] Compute Centroids: 0.07365083694458008 seconds --
+Dimensions: 2 200
+-- [python] Whole Initilization for C-Program: 5.4710164070129395 seconds --
+-- [C] yao protocol setup: 0.000124 seconds --
+
+-----initilize constants-----
+-- [oblivc] allocate memory for local data, norms, obliv data: 0.000057 seconds --
+
+-----load data-----
+-- [oblivc] load local data: 0.000018 seconds --
+
+-----distribute data-----
+-- [oblivc] feed obliv data: 0.059050 seconds --
+
+-----compute/distribute norm-----
+-- [oblivc] compute and feed obliv norms: 0.000346 seconds --
+
+-----Compute Scores-----
+-- [oblivc] first score: 2.169547 seconds --
+-- [oblivc] compute all scores: 4.338691 seconds --
+
+-----Reveal Scores-----
+-- [oblivc] reveal scores: 0.000004 seconds --
+-- [oblivc] Whole runtime: 4.398332 seconds --
+-- [C] yao protocol terminated: 4.583052 seconds --
+
+Done!
+-- [C] Whole runtime: 4.583235 seconds --
+-- [python] C-Program runtime: 8.53295350074768 seconds --
+-- [python] Whole runtime: 14.004106760025024 seconds --
+
+PARTY 2
+Retrieve word-vectors and compute document vectors
+-- [query] Preprocess & Retrieve word-vectors: 3.45629620552063 seconds --
+-- [query] Extract doc. titles: 0.023138999938964844 seconds --
+Dimensions: 1 200
+-- [python] Whole Initilization for C-Program: 5.12274694442749 seconds --
+-- [C] yao protocol setup: 0.000290 seconds --
+
+-----initilize constants-----
+-- [oblivc] allocate memory for local data, norms, obliv data: 0.000062 seconds --
+
+-----load data-----
+-- [oblivc] load local data: 0.000011 seconds --
+
+-----distribute data-----
+-- [oblivc] feed obliv data: 0.045730 seconds --
+
+-----compute/distribute norm-----
+-- [oblivc] compute and feed obliv norms: 0.000294 seconds --
+
+-----Compute Scores-----
+-- [oblivc] first score: 1.379618 seconds --
+-- [oblivc] compute all scores: 2.757599 seconds --
+
+-----Reveal Scores-----
+-- [oblivc] reveal scores: 0.000010 seconds --
+-- [oblivc] Whole runtime: 2.803925 seconds --
+-- [C] yao protocol terminated: 3.432928 seconds --
+-- [C] sort rankings: 0.000037 seconds --
+
+Score: -0.042812
+
+Score: -0.048884
+
+Done!
+-- [C] Whole runtime: 3.433458 seconds --
+-- [python] C-Program runtime: 5.357405185699463 seconds --
+0 Cambridge
+1 Oxford
+-- [python] Whole runtime: 10.480804681777954 seconds --
+
+
+--------------------------------
+Test settings: Query: cambridge university, data: ../../data/data2d.txt
+
+C-Program:
+Retrieve word-vectors and compute document vectors
+-- [docs] Preprocessing: 0.04020214080810547 seconds --
+-- [docs] Retrieve word-vectors: 3.29596209526062 seconds --
+-- [docs] Compute Centroids: 0.06606554985046387 seconds --
+-- [query] Preprocess & Retrieve word-vectors: 3.153226375579834 seconds --
+-- [query] Extract doc. titles: 0.0024538040161132812 seconds --
+-- [python] Whole Initilization for C-Program: 9.838973999023438 seconds --
+Begin C-Score Computation
+Allocating Memory..
+Computing Scores..
+-- [C] compute Query norms: 0.000003 seconds --
+-- [C] compute Doc norms: 0.000002 seconds --
+-- [C] compute Rankings: 0.000003 seconds --
+Sorting ranks..
+-- [C] sort rankings: 0.000004 seconds --
+Score: -0.046811
+Score: -0.048060
+Done!
+
+-- [C] Whole runtime: 0.000118 seconds --
+-- [python] C-Program runtime: 0.00024366378784179688 seconds --
+1 Oxford
+0 Cambridge
+-- [python] Whole runtime: 9.839335441589355 seconds --
+
+Oblivc-Program:
+PARTY 1
+Retrieve word-vectors and compute document vectors
+-- [docs] Preprocessing: 0.04144167900085449 seconds --
+-- [docs] Retrieve word-vectors: 3.48582124710083 seconds --
+-- [docs] Compute Centroids: 0.06934118270874023 seconds --
+Dimensions: 2 200
+-- [python] Whole Initilization for C-Program: 5.415776252746582 seconds --
+-- [C] yao protocol setup: 0.000187 seconds --
+
+-----initilize constants-----
+-- [oblivc] allocate memory for local data, norms, obliv data: 0.000070 seconds --
+
+-----load data-----
+-- [oblivc] load local data: 0.000019 seconds --
+
+-----distribute data-----
+-- [oblivc] feed obliv data: 0.105428 seconds --
+
+-----compute/distribute norm-----
+-- [oblivc] compute and feed obliv norms: 0.000594 seconds --
+
+-----Compute Scores-----
+-- [oblivc] first score: 4.370072 seconds --
+-- [oblivc] compute all scores: 8.737364 seconds --
+
+-----Reveal Scores-----
+-- [oblivc] reveal scores: 0.000005 seconds --
+-- [oblivc] Whole runtime: 8.843646 seconds --
+-- [C] yao protocol terminated: 8.998142 seconds --
+
+Done!
+-- [C] Whole runtime: 8.998375 seconds --
+-- [python] C-Program runtime: 13.382657527923584 seconds --
+-- [python] Whole runtime: 18.798585176467896 seconds --
+
+PARTY 2
+Retrieve word-vectors and compute document vectors
+-- [query] Preprocess & Retrieve word-vectors: 3.541076898574829 seconds --
+-- [query] Extract doc. titles: 0.023355484008789062 seconds --
+Dimensions: 2 200
+-- [python] Whole Initilization for C-Program: 5.209255695343018 seconds --
+-- [C] yao protocol setup: 0.000302 seconds --
+
+-----initilize constants-----
+-- [oblivc] allocate memory for local data, norms, obliv data: 0.000085 seconds --
+
+-----load data-----
+-- [oblivc] load local data: 0.000019 seconds --
+
+-----distribute data-----
+-- [oblivc] feed obliv data: 0.086212 seconds --
+
+-----compute/distribute norm-----
+-- [oblivc] compute and feed obliv norms: 0.000541 seconds --
+
+-----Compute Scores-----
+-- [oblivc] first score: 2.595553 seconds --
+-- [oblivc] compute all scores: 5.163589 seconds --
+
+-----Reveal Scores-----
+-- [oblivc] reveal scores: 0.000007 seconds --
+-- [oblivc] Whole runtime: 5.250635 seconds --
+-- [C] yao protocol terminated: 5.780460 seconds --
+-- [C] sort rankings: 0.000043 seconds --
+
+Score: -0.046811
+
+Score: -0.048060
+
+Done!
+-- [C] Whole runtime: 5.780996 seconds --
+-- [python] C-Program runtime: 9.821593999862671 seconds --
+1 Oxford
+0 Cambridge
+-- [python] Whole runtime: 15.031491756439209 seconds --
+
+
+--------------------------------
+Test settings: Query: cambridge university giraffes, data: ../../data/data2d.txt
+
+C-Program:
+Retrieve word-vectors and compute document vectors
+-- [docs] Preprocessing: 0.040781259536743164 seconds --
+-- [docs] Retrieve word-vectors: 3.295116424560547 seconds --
+-- [docs] Compute Centroids: 0.06564521789550781 seconds --
+-- [query] Preprocess & Retrieve word-vectors: 3.1649298667907715 seconds --
+-- [query] Extract doc. titles: 0.0024509429931640625 seconds --
+-- [python] Whole Initilization for C-Program: 9.858733654022217 seconds --
+Begin C-Score Computation
+Allocating Memory..
+Computing Scores..
+-- [C] compute Query norms: 0.000003 seconds --
+-- [C] compute Doc norms: 0.000002 seconds --
+-- [C] compute Rankings: 0.000005 seconds --
+Sorting ranks..
+-- [C] sort rankings: 0.000004 seconds --
+Score: -0.045715
+Score: -0.046344
+Done!
+
+-- [C] Whole runtime: 0.000150 seconds --
+-- [python] C-Program runtime: 0.000347137451171875 seconds --
+1 Oxford
+0 Cambridge
+-- [python] Whole runtime: 9.859241008758545 seconds --
+
+Oblivc-Program:
+PARTY 1
+Retrieve word-vectors and compute document vectors
+-- [docs] Preprocessing: 0.042165279388427734 seconds --
+-- [docs] Retrieve word-vectors: 3.2909774780273438 seconds --
+-- [docs] Compute Centroids: 0.0666048526763916 seconds --
+Dimensions: 2 200
+-- [python] Whole Initilization for C-Program: 5.207812786102295 seconds --
+-- [C] yao protocol setup: 0.000212 seconds --
+
+-----initilize constants-----
+-- [oblivc] allocate memory for local data, norms, obliv data: 0.000057 seconds --
+
+-----load data-----
+-- [oblivc] load local data: 0.000019 seconds --
+
+-----distribute data-----
+-- [oblivc] feed obliv data: 0.152451 seconds --
+
+-----compute/distribute norm-----
+-- [oblivc] compute and feed obliv norms: 0.000940 seconds --
+
+-----Compute Scores-----
+-- [oblivc] first score: 6.531001 seconds --
+-- [oblivc] compute all scores: 13.070552 seconds --
+
+-----Reveal Scores-----
+-- [oblivc] reveal scores: 0.000004 seconds --
+-- [oblivc] Whole runtime: 13.224206 seconds --
+-- [C] yao protocol terminated: 13.378138 seconds --
+
+Done!
+-- [C] Whole runtime: 13.378394 seconds --
+-- [python] C-Program runtime: 19.60907220840454 seconds --
+-- [python] Whole runtime: 24.817000150680542 seconds --
+
+
+PARTY 2
+Retrieve word-vectors and compute document vectors
+-- [query] Preprocess & Retrieve word-vectors: 3.234297752380371 seconds --
+-- [query] Extract doc. titles: 0.023161649703979492 seconds --
+Dimensions: 3 200
+-- [python] Whole Initilization for C-Program: 4.9071550369262695 seconds --
+-- [C] yao protocol setup: 0.000311 seconds --
+
+-----initilize constants-----
+-- [oblivc] allocate memory for local data, norms, obliv data: 0.000061 seconds --
+
+-----load data-----
+-- [oblivc] load local data: 0.000028 seconds --
+
+-----distribute data-----
+-- [oblivc] feed obliv data: 0.126197 seconds --
+
+-----compute/distribute norm-----
+-- [oblivc] compute and feed obliv norms: 0.000697 seconds --
+
+-----Compute Scores-----
+-- [oblivc] first score: 3.862297 seconds --
+-- [oblivc] compute all scores: 7.753696 seconds --
+
+-----Reveal Scores-----
+-- [oblivc] reveal scores: 0.000013 seconds --
+-- [oblivc] Whole runtime: 7.880928 seconds --
+-- [C] yao protocol terminated: 8.413985 seconds --
+-- [C] sort rankings: 0.000041 seconds --
+
+Score: -0.045715
+
+Score: -0.046344
+
+Done!
+-- [C] Whole runtime: 8.414545 seconds --
+-- [python] C-Program runtime: 14.139395713806152 seconds --
+1 Oxford
+0 Cambridge
+-- [python] Whole runtime: 19.047232389450073 seconds --
+
+
+--------------------------------
+Test settings: Query: cambridge, data: ../../data/data5d.txt
+
+C-Program:
+Retrieve word-vectors and compute document vectors
+-- [docs] Preprocessing: 0.06465005874633789 seconds --
+-- [docs] Retrieve word-vectors: 3.378596305847168 seconds --
+-- [docs] Compute Centroids: 0.16166067123413086 seconds --
+-- [query] Preprocess & Retrieve word-vectors: 3.1752915382385254 seconds --
+-- [query] Extract doc. titles: 0.0058329105377197266 seconds --
+-- [python] Whole Initilization for C-Program: 10.07727861404419 seconds --
+Begin C-Score Computation
+Allocating Memory..
+Computing Scores..
+-- [C] compute Query norms: 0.000002 seconds --
+-- [C] compute Doc norms: 0.000003 seconds --
+-- [C] compute Rankings: 0.000004 seconds --
+Sorting ranks..
+-- [C] sort rankings: 0.000003 seconds --
+Score: -0.042812
+Score: -0.048884
+Done!
+
+-- [C] Whole runtime: 0.000139 seconds --
+-- [python] C-Program runtime: 0.0002982616424560547 seconds --
+0 Cambridge
+1 Oxford
+-- [python] Whole runtime: 10.07769513130188 seconds --
+
+Oblivc-Program:
+PARTY 1
+Retrieve word-vectors and compute document vectors
+-- [docs] Preprocessing: 0.06641650199890137 seconds --
+-- [docs] Retrieve word-vectors: 3.6486947536468506 seconds --
+-- [docs] Compute Centroids: 0.17068195343017578 seconds --
+Dimensions: 5 200
+-- [python] Whole Initilization for C-Program: 5.725847482681274 seconds --
+-- [C] yao protocol setup: 0.000146 seconds --
+
+-----initilize constants-----
+-- [oblivc] allocate memory for local data, norms, obliv data: 0.000054 seconds --
+
+-----load data-----
+-- [oblivc] load local data: 0.000044 seconds --
+
+-----distribute data-----
+-- [oblivc] feed obliv data: 0.074633 seconds --
+
+-----compute/distribute norm-----
+-- [oblivc] compute and feed obliv norms: 0.000423 seconds --
+
+-----Compute Scores-----
+-- [oblivc] first score: 2.180908 seconds --
+-- [oblivc] compute all scores: 10.906001 seconds --
+
+-----Reveal Scores-----
+-- [oblivc] reveal scores: 0.000007 seconds --
+-- [oblivc] Whole runtime: 10.981353 seconds --
+-- [C] yao protocol terminated: 11.132056 seconds --
+
+Done!
+-- [C] Whole runtime: 11.132246 seconds --
+-- [python] C-Program runtime: 14.637919425964355 seconds --
+-- [python] Whole runtime: 20.364020586013794 seconds --
+
+PARTY 2
+Retrieve word-vectors and compute document vectors
+-- [query] Preprocess & Retrieve word-vectors: 3.5710110664367676 seconds --
+-- [query] Extract doc. titles: 0.02673792839050293 seconds --
+Dimensions: 1 200
+-- [python] Whole Initilization for C-Program: 5.250132322311401 seconds --
+-- [C] yao protocol setup: 0.000300 seconds --
+
+-----initilize constants-----
+-- [oblivc] allocate memory for local data, norms, obliv data: 0.000082 seconds --
+
+-----load data-----
+-- [oblivc] load local data: 0.000011 seconds --
+
+-----distribute data-----
+-- [oblivc] feed obliv data: 0.049499 seconds --
+
+-----compute/distribute norm-----
+-- [oblivc] compute and feed obliv norms: 0.000356 seconds --
+
+-----Compute Scores-----
+-- [oblivc] first score: 1.304660 seconds --
+-- [oblivc] compute all scores: 6.467552 seconds --
+
+-----Reveal Scores-----
+-- [oblivc] reveal scores: 0.000012 seconds --
+-- [oblivc] Whole runtime: 6.517745 seconds --
+-- [C] yao protocol terminated: 7.053816 seconds --
+-- [C] sort rankings: 0.000008 seconds --
+
+Score: -0.042812
+
+Score: -0.048884
+
+Done!
+-- [C] Whole runtime: 7.054323 seconds --
+-- [python] C-Program runtime: 11.912748336791992 seconds --
+0 Cambridge
+1 Oxford
+-- [python] Whole runtime: 17.16351819038391 seconds --
+
+
+--------------------------------
+Test settings: Query: cambridge university, data: ../../data/data5d.txt
+
+C-Program:
+Retrieve word-vectors and compute document vectors
+-- [docs] Preprocessing: 0.06560349464416504 seconds --
+-- [docs] Retrieve word-vectors: 3.391233444213867 seconds --
+-- [docs] Compute Centroids: 0.16269302368164062 seconds --
+-- [query] Preprocess & Retrieve word-vectors: 3.1630845069885254 seconds --
+-- [query] Extract doc. titles: 0.0058667659759521484 seconds --
+-- [python] Whole Initilization for C-Program: 10.08924150466919 seconds --
+Begin C-Score Computation
+Allocating Memory..
+Computing Scores..
+-- [C] compute Query norms: 0.000003 seconds --
+-- [C] compute Doc norms: 0.000003 seconds --
+-- [C] compute Rankings: 0.000006 seconds --
+Sorting ranks..
+-- [C] sort rankings: 0.000004 seconds --
+Score: -0.046811
+Score: -0.048060
+Done!
+
+-- [C] Whole runtime: 0.000117 seconds --
+-- [python] C-Program runtime: 0.0002713203430175781 seconds --
+1 Oxford
+0 Cambridge
+-- [python] Whole runtime: 10.089631080627441 seconds --
+
+Oblivc-Program:
+PARTY 1
+Retrieve word-vectors and compute document vectors
+-- [docs] Preprocessing: 0.06577658653259277 seconds --
+-- [docs] Retrieve word-vectors: 3.513458490371704 seconds --
+-- [docs] Compute Centroids: 0.17180848121643066 seconds --
+Dimensions: 5 200
+-- [python] Whole Initilization for C-Program: 5.598005771636963 seconds --
+-- [C] yao protocol setup: 0.000210 seconds --
+
+-----initilize constants-----
+-- [oblivc] allocate memory for local data, norms, obliv data: 0.000056 seconds --
+
+-----load data-----
+-- [oblivc] load local data: 0.000044 seconds --
+
+-----distribute data-----
+-- [oblivc] feed obliv data: 0.121308 seconds --
+
+-----compute/distribute norm-----
+-- [oblivc] compute and feed obliv norms: 0.000735 seconds --
+
+-----Compute Scores-----
+-- [oblivc] first score: 4.360280 seconds --
+-- [oblivc] compute all scores: 21.817545 seconds --
+
+-----Reveal Scores-----
+-- [oblivc] reveal scores: 0.000007 seconds --
+-- [oblivc] Whole runtime: 21.939883 seconds --
+-- [C] yao protocol terminated: 22.103311 seconds --
+
+Done!
+-- [C] Whole runtime: 22.103572 seconds --
+-- [python] C-Program runtime: 26.849373817443848 seconds --
+-- [python] Whole runtime: 32.4476523399353 seconds --
+
+PARTY 2
+Retrieve word-vectors and compute document vectors
+-- [query] Preprocess & Retrieve word-vectors: 3.4724531173706055 seconds --
+-- [query] Extract doc. titles: 0.0267181396484375 seconds --
+Dimensions: 2 200
+-- [python] Whole Initilization for C-Program: 5.152947187423706 seconds --
+-- [C] yao protocol setup: 0.000304 seconds --
+
+-----initilize constants-----
+-- [oblivc] allocate memory for local data, norms, obliv data: 0.000081 seconds --
+
+-----load data-----
+-- [oblivc] load local data: 0.000020 seconds --
+
+-----distribute data-----
+-- [oblivc] feed obliv data: 0.091381 seconds --
+
+-----compute/distribute norm-----
+-- [oblivc] compute and feed obliv norms: 0.000549 seconds --
+
+-----Compute Scores-----
+-- [oblivc] first score: 2.591904 seconds --
+-- [oblivc] compute all scores: 12.903441 seconds --
+
+-----Reveal Scores-----
+-- [oblivc] reveal scores: 0.000010 seconds --
+-- [oblivc] Whole runtime: 12.995680 seconds --
+-- [C] yao protocol terminated: 13.533332 seconds --
+-- [C] sort rankings: 0.000006 seconds --
+
+Score: -0.046811
+
+Score: -0.048060
+
+Done!
+-- [C] Whole runtime: 13.533778 seconds --
+-- [python] C-Program runtime: 23.060822248458862 seconds --
+1 Oxford
+0 Cambridge
+-- [python] Whole runtime: 28.21396040916443 seconds --
+
+
+--------------------------------
+Test settings: Query: cambridge university giraffes, data: ../../data/data5d.txt
+
+C-Program:
+Retrieve word-vectors and compute document vectors
+-- [docs] Preprocessing: 0.0645744800567627 seconds --
+-- [docs] Retrieve word-vectors: 3.3770456314086914 seconds --
+-- [docs] Compute Centroids: 0.16145634651184082 seconds --
+-- [query] Preprocess & Retrieve word-vectors: 3.1764824390411377 seconds --
+-- [query] Extract doc. titles: 0.005849361419677734 seconds --
+-- [python] Whole Initilization for C-Program: 10.081187963485718 seconds --
+Begin C-Score Computation
+Allocating Memory..
+Computing Scores..
+-- [C] compute Query norms: 0.000003 seconds --
+-- [C] compute Doc norms: 0.000003 seconds --
+-- [C] compute Rankings: 0.000008 seconds --
+Sorting ranks..
+-- [C] sort rankings: 0.000005 seconds --
+Score: -0.045715
+Score: -0.046344
+Done!
+
+-- [C] Whole runtime: 0.000121 seconds --
+-- [python] C-Program runtime: 0.00028395652770996094 seconds --
+1 Oxford
+0 Cambridge
+-- [python] Whole runtime: 10.081591844558716 seconds --
+
+Oblivc-Program:
+PARTY 1
+Retrieve word-vectors and compute document vectors
+-- [docs] Preprocessing: 0.06594228744506836 seconds --
+-- [docs] Retrieve word-vectors: 3.598886013031006 seconds --
+-- [docs] Compute Centroids: 0.18747329711914062 seconds --
+Dimensions: 5 200
+-- [python] Whole Initilization for C-Program: 5.692506790161133 seconds --
+-- [C] yao protocol setup: 0.000204 seconds --
+
+-----initilize constants-----
+-- [oblivc] allocate memory for local data, norms, obliv data: 0.000061 seconds --
+
+-----load data-----
+-- [oblivc] load local data: 0.000044 seconds --
+
+-----distribute data-----
+-- [oblivc] feed obliv data: 0.167084 seconds --
+
+-----compute/distribute norm-----
+-- [oblivc] compute and feed obliv norms: 0.001031 seconds --
+
+-----Compute Scores-----
+-- [oblivc] first score: 6.535157 seconds --
+-- [oblivc] compute all scores: 32.658706 seconds --
+
+-----Reveal Scores-----
+-- [oblivc] reveal scores: 0.000008 seconds --
+-- [oblivc] Whole runtime: 32.827127 seconds --
+-- [C] yao protocol terminated: 32.981617 seconds --
+
+Done!
+-- [C] Whole runtime: 32.981875 seconds --
+-- [python] C-Program runtime: 36.969101667404175 seconds --
+-- [python] Whole runtime: 42.661762714385986 seconds --
+
+PARTY 2
+Retrieve word-vectors and compute document vectors
+-- [query] Preprocess & Retrieve word-vectors: 3.570768356323242 seconds --
+-- [query] Extract doc. titles: 0.028383255004882812 seconds --
+Dimensions: 3 200
+-- [python] Whole Initilization for C-Program: 5.260862112045288 seconds --
+-- [C] yao protocol setup: 0.000302 seconds --
+
+-----initilize constants-----
+-- [oblivc] allocate memory for local data, norms, obliv data: 0.000085 seconds --
+
+-----load data-----
+-- [oblivc] load local data: 0.000028 seconds --
+
+-----distribute data-----
+-- [oblivc] feed obliv data: 0.128845 seconds --
+
+-----compute/distribute norm-----
+-- [oblivc] compute and feed obliv norms: 0.000784 seconds --
+
+-----Compute Scores-----
+-- [oblivc] first score: 3.904676 seconds --
+-- [oblivc] compute all scores: 19.377551 seconds --
+
+-----Reveal Scores-----
+-- [oblivc] reveal scores: 0.000015 seconds --
+-- [oblivc] Whole runtime: 19.507537 seconds --
+-- [C] yao protocol terminated: 20.044729 seconds --
+-- [C] sort rankings: 0.000010 seconds --
+
+Score: -0.045715
+
+Score: -0.046344
+
+Done!
+-- [C] Whole runtime: 20.045239 seconds --
+-- [python] C-Program runtime: 33.86353540420532 seconds --
+1 Oxford
+0 Cambridge
+-- [python] Whole runtime: 39.12507677078247 seconds --
+
+
+--------------------------------
+Test settings: Query: cambridge, data: ../../data/data10d.txt
+
+C-Program:
+Retrieve word-vectors and compute document vectors
+-- [docs] Preprocessing: 0.09593844413757324 seconds --
+-- [docs] Retrieve word-vectors: 3.478567600250244 seconds --
+-- [docs] Compute Centroids: 0.27652406692504883 seconds --
+-- [query] Preprocess & Retrieve word-vectors: 3.153481960296631 seconds --
+-- [query] Extract doc. titles: 0.011681318283081055 seconds --
+-- [python] Whole Initilization for C-Program: 10.305651426315308 seconds --
+Begin C-Score Computation
+Allocating Memory..
+Computing Scores..
+-- [C] compute Query norms: 0.000003 seconds --
+-- [C] compute Doc norms: 0.000005 seconds --
+-- [C] compute Rankings: 0.000006 seconds --
+Sorting ranks..
+-- [C] sort rankings: 0.000004 seconds --
+Score: -0.042812
+Score: -0.048884
+Done!
+
+-- [C] Whole runtime: 0.000102 seconds --
+-- [python] C-Program runtime: 0.00029349327087402344 seconds --
+0 Cambridge
+1 Oxford
+-- [python] Whole runtime: 10.30606722831726 seconds --
+
+Oblivc-Program:
+PARTY 1
+Retrieve word-vectors and compute document vectors
+-- [docs] Preprocessing: 0.09666180610656738 seconds --
+-- [docs] Retrieve word-vectors: 3.781104326248169 seconds --
+-- [docs] Compute Centroids: 0.2904644012451172 seconds --
+Dimensions: 10 200
+-- [python] Whole Initilization for C-Program: 5.997477293014526 seconds --
+-- [C] yao protocol setup: 0.000188 seconds --
+
+-----initilize constants-----
+-- [oblivc] allocate memory for local data, norms, obliv data: 0.000062 seconds --
+
+-----load data-----
+-- [oblivc] load local data: 0.000085 seconds --
+
+-----distribute data-----
+-- [oblivc] feed obliv data: 0.101079 seconds --
+
+-----compute/distribute norm-----
+-- [oblivc] compute and feed obliv norms: 0.000669 seconds --
+
+-----Compute Scores-----
+-- [oblivc] first score: 2.242646 seconds --
+-- [oblivc] compute all scores: 22.410675 seconds --
+
+-----Reveal Scores-----
+-- [oblivc] reveal scores: 0.000010 seconds --
+-- [oblivc] Whole runtime: 22.512766 seconds --
+-- [C] yao protocol terminated: 22.682714 seconds --
+
+Done!
+-- [C] Whole runtime: 22.682948 seconds --
+-- [python] C-Program runtime: 25.9460346698761 seconds --
+-- [python] Whole runtime: 31.943766593933105 seconds --
+
+PARTY 2
+Retrieve word-vectors and compute document vectors
+-- [query] Preprocess & Retrieve word-vectors: 3.550341844558716 seconds --
+-- [query] Extract doc. titles: 0.03233480453491211 seconds --
+Dimensions: 1 200
+-- [python] Whole Initilization for C-Program: 5.218666315078735 seconds --
+-- [C] yao protocol setup: 0.000317 seconds --
+
+-----initilize constants-----
+-- [oblivc] allocate memory for local data, norms, obliv data: 0.000060 seconds --
+
+-----load data-----
+-- [oblivc] load local data: 0.000011 seconds --
+
+-----distribute data-----
+-- [oblivc] feed obliv data: 0.052742 seconds --
+
+-----compute/distribute norm-----
+-- [oblivc] compute and feed obliv norms: 0.000542 seconds --
+
+-----Compute Scores-----
+-- [oblivc] first score: 1.297258 seconds --
+-- [oblivc] compute all scores: 12.953734 seconds --
+
+-----Reveal Scores-----
+-- [oblivc] reveal scores: 0.000014 seconds --
+-- [oblivc] Whole runtime: 13.007340 seconds --
+-- [C] yao protocol terminated: 13.529807 seconds --
+-- [C] sort rankings: 0.000009 seconds --
+
+Score: -0.042812
+
+Score: -0.048884
+
+Done!
+-- [C] Whole runtime: 13.530349 seconds --
+-- [python] C-Program runtime: 23.474498748779297 seconds --
+0 Cambridge
+1 Oxford
+-- [python] Whole runtime: 28.693806171417236 seconds --
+*** Error in `python3': corrupted size vs. prev_size: 0x0000000001fb71e0 ***
+
+
+
+--------------------------------
+Test settings: Query: cambridge university, data: ../../data/data10d.txt
+
+C-Program:
+Retrieve word-vectors and compute document vectors
+-- [docs] Preprocessing: 0.09586405754089355 seconds --
+-- [docs] Retrieve word-vectors: 3.483895778656006 seconds --
+-- [docs] Compute Centroids: 0.2677948474884033 seconds --
+-- [query] Preprocess & Retrieve word-vectors: 3.2146241664886475 seconds --
+-- [query] Extract doc. titles: 0.011789560317993164 seconds --
+-- [python] Whole Initilization for C-Program: 10.359144687652588 seconds --
+Begin C-Score Computation
+Allocating Memory..
+Computing Scores..
+-- [C] compute Query norms: 0.000002 seconds --
+-- [C] compute Doc norms: 0.000005 seconds --
+-- [C] compute Rankings: 0.000009 seconds --
+Sorting ranks..
+-- [C] sort rankings: 0.000004 seconds --
+Score: -0.046811
+Score: -0.048060
+Done!
+
+-- [C] Whole runtime: 0.000118 seconds --
+-- [python] C-Program runtime: 0.0003147125244140625 seconds --
+1 Oxford
+0 Cambridge
+-- [python] Whole runtime: 10.359578132629395 seconds --
+
+Oblivc-Program:
+PARTY 1
+Retrieve word-vectors and compute document vectors
+-- [docs] Preprocessing: 0.09793853759765625 seconds --
+-- [docs] Retrieve word-vectors: 3.479475259780884 seconds --
+-- [docs] Compute Centroids: 0.27860045433044434 seconds --
+Dimensions: 10 200
+-- [python] Whole Initilization for C-Program: 5.6325249671936035 seconds --
+-- [C] yao protocol setup: 0.000251 seconds --
+
+-----initilize constants-----
+-- [oblivc] allocate memory for local data, norms, obliv data: 0.000060 seconds --
+
+-----load data-----
+-- [oblivc] load local data: 0.000085 seconds --
+
+-----distribute data-----
+-- [oblivc] feed obliv data: 0.149383 seconds --
+
+-----compute/distribute norm-----
+-- [oblivc] compute and feed obliv norms: 0.001031 seconds --
+
+-----Compute Scores-----
+-- [oblivc] first score: 4.357560 seconds --
+-- [oblivc] compute all scores: 43.480244 seconds --
+
+-----Reveal Scores-----
+-- [oblivc] reveal scores: 0.000009 seconds --
+-- [oblivc] Whole runtime: 43.631006 seconds --
+-- [C] yao protocol terminated: 43.794233 seconds --
+
+Done!
+-- [C] Whole runtime: 43.794571 seconds --
+-- [python] C-Program runtime: 49.43116211891174 seconds --
+-- [python] Whole runtime: 55.06395387649536 seconds --
+
+PARTY 2
+Retrieve word-vectors and compute document vectors
+-- [query] Preprocess & Retrieve word-vectors: 3.2621068954467773 seconds --
+-- [query] Extract doc. titles: 0.032279014587402344 seconds --
+Dimensions: 2 200
+-- [python] Whole Initilization for C-Program: 4.928870916366577 seconds --
+-- [C] yao protocol setup: 0.000298 seconds --
+
+-----initilize constants-----
+-- [oblivc] allocate memory for local data, norms, obliv data: 0.000072 seconds --
+
+-----load data-----
+-- [oblivc] load local data: 0.000019 seconds --
+
+-----distribute data-----
+-- [oblivc] feed obliv data: 0.095577 seconds --
+
+-----compute/distribute norm-----
+-- [oblivc] compute and feed obliv norms: 0.000683 seconds --
+
+-----Compute Scores-----
+-- [oblivc] first score: 2.597255 seconds --
+-- [oblivc] compute all scores: 25.790647 seconds --
+
+-----Reveal Scores-----
+-- [oblivc] reveal scores: 0.000010 seconds --
+-- [oblivc] Whole runtime: 25.887191 seconds --
+-- [C] yao protocol terminated: 26.415828 seconds --
+-- [C] sort rankings: 0.000007 seconds --
+
+Score: -0.046811
+
+Score: -0.048060
+
+Done!
+-- [C] Whole runtime: 26.416242 seconds --
+-- [python] C-Program runtime: 44.76981854438782 seconds --
+1 Oxford
+0 Cambridge
+-- [python] Whole runtime: 49.69886541366577 seconds --
+
+
+--------------------------------
+Test settings: Query: cambridge university giraffes, data: ../../data/data10d.txt
+
+C-Program:
+Retrieve word-vectors and compute document vectors
+-- [docs] Preprocessing: 0.11106109619140625 seconds --
+-- [docs] Retrieve word-vectors: 3.509016752243042 seconds --
+-- [docs] Compute Centroids: 0.265850305557251 seconds --
+-- [query] Preprocess & Retrieve word-vectors: 3.1777279376983643 seconds --
+-- [query] Extract doc. titles: 0.01162576675415039 seconds --
+-- [python] Whole Initilization for C-Program: 10.348847150802612 seconds --
+Begin C-Score Computation
+Allocating Memory..
+Computing Scores..
+-- [C] compute Query norms: 0.000003 seconds --
+-- [C] compute Doc norms: 0.000005 seconds --
+-- [C] compute Rankings: 0.000013 seconds --
+Sorting ranks..
+-- [C] sort rankings: 0.000005 seconds --
+Score: -0.045715
+Score: -0.046344
+Done!
+
+-- [C] Whole runtime: 0.000131 seconds --
+-- [python] C-Program runtime: 0.00035762786865234375 seconds --
+1 Oxford
+0 Cambridge
+-- [python] Whole runtime: 10.349326610565186 seconds --
+
+Oblivc-Program:
+PARTY 1
+Retrieve word-vectors and compute document vectors
+-- [docs] Preprocessing: 0.09684157371520996 seconds --
+-- [docs] Retrieve word-vectors: 3.695070743560791 seconds --
+-- [docs] Compute Centroids: 0.2879006862640381 seconds --
+Dimensions: 10 200
+-- [python] Whole Initilization for C-Program: 5.911418437957764 seconds --
+-- [C] yao protocol setup: 0.000259 seconds --
+
+-----initilize constants-----
+-- [oblivc] allocate memory for local data, norms, obliv data: 0.000058 seconds --
+
+-----load data-----
+-- [oblivc] load local data: 0.000085 seconds --
+
+-----distribute data-----
+-- [oblivc] feed obliv data: 0.189355 seconds --
+
+-----compute/distribute norm-----
+-- [oblivc] compute and feed obliv norms: 0.001262 seconds --
+
+-----Compute Scores-----
+-- [oblivc] first score: 6.521306 seconds --
+-- [oblivc] compute all scores: 65.183802 seconds --
+
+-----Reveal Scores-----
+-- [oblivc] reveal scores: 0.000009 seconds --
+-- [oblivc] Whole runtime: 65.374753 seconds --
+-- [C] yao protocol terminated: 65.529978 seconds --
+
+Done!
+-- [C] Whole runtime: 65.530285 seconds --
+-- [python] C-Program runtime: 69.49944639205933 seconds --
+-- [python] Whole runtime: 75.41100311279297 seconds --
+
+PARTY 2
+Retrieve word-vectors and compute document vectors
+-- [query] Preprocess & Retrieve word-vectors: 3.5829975605010986 seconds --
+-- [query] Extract doc. titles: 0.03211688995361328 seconds --
+Dimensions: 3 200
+-- [python] Whole Initilization for C-Program: 5.274844646453857 seconds --
+-- [C] yao protocol setup: 0.000312 seconds --
+
+-----initilize constants-----
+-- [oblivc] allocate memory for local data, norms, obliv data: 0.000061 seconds --
+
+-----load data-----
+-- [oblivc] load local data: 0.000027 seconds --
+
+-----distribute data-----
+-- [oblivc] feed obliv data: 0.133417 seconds --
+
+-----compute/distribute norm-----
+-- [oblivc] compute and feed obliv norms: 0.000934 seconds --
+
+-----Compute Scores-----
+-- [oblivc] first score: 3.867980 seconds --
+-- [oblivc] compute all scores: 38.639127 seconds --
+
+-----Reveal Scores-----
+-- [oblivc] reveal scores: 0.000019 seconds --
+-- [oblivc] Whole runtime: 38.773821 seconds --
+-- [C] yao protocol terminated: 39.313404 seconds --
+-- [C] sort rankings: 0.000008 seconds --
+
+Score: -0.045715
+
+Score: -0.046344
+
+Done!
+-- [C] Whole runtime: 39.313931 seconds --
+-- [python] C-Program runtime: 66.51470065116882 seconds --
+1 Oxford
+0 Cambridge
+-- [python] Whole runtime: 71.79028177261353 seconds --
+
+
+--------------------------------
+Test settings: Query: cambridge, data: ../../data/dataue800d.txt
+!!!!FURTHERMORE: topN: 10
+!!!!WARNING: Wenn zu viele Documente, dann muss party 2 warten, bis party 1 tcp-connection eröffnen kann
+
+C-Program:
+Retrieve word-vectors and compute document vectors
+-- [docs] Preprocessing: 5.990394830703735 seconds --
+-- [docs] Retrieve word-vectors: 27.430468320846558 seconds --
+-- [docs] Compute Centroids: 25.712313652038574 seconds --
+-- [query] Preprocess & Retrieve word-vectors: 3.1762561798095703 seconds --
+-- [query] Extract doc. titles: 0.975715160369873 seconds --
+-- [python] Whole Initilization for C-Program: 66.6027934551239 seconds --
+Begin C-Score Computation
+Allocating Memory..
+Computing Scores..
+-- [C] compute Query norms: 0.000003 seconds --
+-- [C] compute Doc norms: 0.000329 seconds --
+-- [C] compute Rankings: 0.000349 seconds --
+Sorting ranks..
+-- [C] sort rankings: 0.000153 seconds --
+Score: -0.036963
+Score: -0.040999
+Score: -0.041716
+Score: -0.042812
+Score: -0.044998
+Score: -0.046276
+Score: -0.046892
+Score: -0.048884
+Score: -0.049161
+Score: -0.049377
+Done!
+
+-- [C] Whole runtime: 0.001049 seconds --
+-- [python] C-Program runtime: 0.00870656967163086 seconds --
+800 Cleveland Scene - Movie Times &amp; Reviews
+727 UpperMichigansSource.com - Garceau, Wenick-Kutz, Magowan Insurance Agency, Escanaba, MI - Latest news, weather, high school sports for Michigan's ... 
+88 Marco Eagle - Chamber marks 35th year with installation dinner and Leadership Marco graduation - Marco Eagle
+0 Cambridge
+332 Utah Local News - Golden Globes gallery - Sunday night's red carpet - The Salt Lake Tribune
+67 Wild's training camp roster - StarTribune.com
+554 Chicago Reader - Pollan v. Mackey, round... - Bleader
+1 Oxford
+827 Highlands, NC - The Highlander Newspaper - Highlands, North Carolina
+515 The Gazette - Hospital program aims to boost community health - health, almost, stretched - Holy health - Colorado Springs Gazette, CO
+-- [python] Whole runtime: 66.61188554763794 seconds --
+
+Oblivc-Program:
+PARTY 1
+Retrieve word-vectors and compute document vectors
+-- [docs] Preprocessing: 6.252673864364624 seconds --
+-- [docs] Retrieve word-vectors: 28.654633283615112 seconds --
+-- [docs] Compute Centroids: 26.225076913833618 seconds --
+Dimensions: 835 200
+-- [python] Whole Initilization for C-Program: 62.81989312171936 seconds --
+-- [C] yao protocol setup: 0.006829 seconds --
+
+-----initilize constants-----
+-- [oblivc] allocate memory for local data, norms, obliv data: 0.000440 seconds --
+
+-----load data-----
+-- [oblivc] load local data: 0.006822 seconds --
+
+-----distribute data-----
+-- [oblivc] feed obliv data: 4.374763 seconds --
+
+-----compute/distribute norm-----
+-- [oblivc] compute and feed obliv norms: 0.027224 seconds --
+
+-----Compute Scores-----
+-- [oblivc] first score: 2.182058 seconds --
+-- [oblivc] compute all scores: 1815.724618 seconds --
+
+-----Reveal Scores-----
+-- [oblivc] reveal scores: 0.000463 seconds --
+-- [oblivc] Whole runtime: 1820.134553 seconds --
+-- [C] yao protocol terminated: 1820.302117 seconds --
+
+Done!
+-- [C] Whole runtime: 1820.309011 seconds --
+-- [python] C-Program runtime: 1845.9861216545105 seconds --
+-- [python] Whole runtime: 1908.806134223938 seconds --
+
+PARTY 2
+Retrieve word-vectors and compute document vectors
+-- [query] Preprocess & Retrieve word-vectors: 3.2408363819122314 seconds --
+-- [query] Extract doc. titles: 0.9999098777770996 seconds --
+Dimensions: 1 200
+-- [python] Whole Initilization for C-Program: 5.868486166000366 seconds --
+-- [C] yao protocol setup: 0.000294 seconds --
+
+-----initilize constants-----
+-- [oblivc] allocate memory for local data, norms, obliv data: 0.002999 seconds --
+
+-----load data-----
+-- [oblivc] load local data: 0.000015 seconds --
+
+-----distribute data-----
+-- [oblivc] feed obliv data: 0.916256 seconds --
+
+-----compute/distribute norm-----
+-- [oblivc] compute and feed obliv norms: 0.021076 seconds --
+
+-----Compute Scores-----
+-- [oblivc] first score: 1.293867 seconds --
+-- [oblivc] compute all scores: 1070.184280 seconds --
+
+-----Reveal Scores-----
+-- [oblivc] reveal scores: 0.000606 seconds --
+-- [oblivc] Whole runtime: 1071.125512 seconds --
+-- [C] yao protocol terminated: 1071.656133 seconds --
+-- [C] sort rankings: 0.000437 seconds --
+
+Score: -0.036963
+
+Score: -0.040999
+
+Score: -0.041716
+
+Score: -0.042812
+
+Score: -0.044998
+
+Score: -0.046276
+
+Score: -0.046892
+
+Score: -0.048884
+
+Score: -0.049161
+
+Score: -0.049377
+
+Done!
+-- [C] Whole runtime: 1071.657323 seconds --
+-- [python] C-Program runtime: 1835.1072204113007 seconds --
+800 Cleveland Scene - Movie Times &amp; Reviews
+727 UpperMichigansSource.com - Garceau, Wenick-Kutz, Magowan Insurance Agency, Escanaba, MI - Latest news, weather, high school sports for Michigan's ... 
+88 Marco Eagle - Chamber marks 35th year with installation dinner and Leadership Marco graduation - Marco Eagle
+0 Cambridge
+332 Utah Local News - Golden Globes gallery - Sunday night's red carpet - The Salt Lake Tribune
+67 Wild's training camp roster - StarTribune.com
+554 Chicago Reader - Pollan v. Mackey, round... - Bleader
+1 Oxford
+827 Highlands, NC - The Highlander Newspaper - Highlands, North Carolina
+515 The Gazette - Hospital program aims to boost community health - health, almost, stretched - Holy health - Colorado Springs Gazette, CO
+-- [python] Whole runtime: 1840.9775488376617 seconds --
+Segmentation fault (core dumped)
+
+

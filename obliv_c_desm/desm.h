@@ -3,12 +3,17 @@
 typedef struct{
 	size_t m;
 	size_t n;
-	float scores[5];
-	float vecs[5][200];
+	size_t count_doc;
+	float *scores;
+	float **vecs;
 } protocolIO;
 
 void desm(void* args);
 
-int * setup(int party, float vecs[][200], int amount, int n, float scores[]);
+int * setup(int party, float vecs[][200], int amount, int n, int *scores, int topN);
 
 float euclid(float *vec, int n);
+
+void create_array(protocolIO *io);
+
+int compare_floats(const void *a, const void *b);

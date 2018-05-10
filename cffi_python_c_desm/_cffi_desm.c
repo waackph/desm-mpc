@@ -492,6 +492,8 @@ static void (*_cffi_call_python_org)(struct _cffi_externpy_s *, char *);
  
 	#include <stdio.h>
 	#include <math.h>
+	#include <stdlib.h>
+	#include <time.h>
 
 	float euclid(float vec[200], int n){
 		float norm = 0;
@@ -500,7 +502,7 @@ static void (*_cffi_call_python_org)(struct _cffi_externpy_s *, char *);
 		for(i = 0; i < n; i = i+1){
 			norm = norm + vec[i]*vec[i];
 		}
-		//return sqrt(norm);
+
 		return sqrt(norm);
 	}
 
@@ -534,25 +536,101 @@ static void (*_cffi_call_python_org)(struct _cffi_externpy_s *, char *);
 		}
 		return cosine/Qn;
 	}
+
+
+	struct sorted_rank { float value; int index; };
+
+
+	int compare_scores(const void *a, const void *b){
+		struct sorted_rank *da = (struct sorted_rank *) a;
+		struct sorted_rank *db = (struct sorted_rank *) b;
+
+		if(da->value > db->value) return -1;
+		else if (da->value < db->value) return 1;
+		else return 0;
+	}
 	
+
 	//args: queries as word-vectors, documents as word-vectors, len(word-vec), amount queries, amount Docs
-	float * scores(float Q[][200], float Docs[][200], int n, int Qn, int Dn, float score[]){
+	int * scores(float Q[][200], float Docs[][200], int n, int Qn, int Dn, int score[], int topN){
+
+		clock_t tGlob;
+		clock_t tLoc;
+		double time_taken;
+
+		tGlob = clock();
+
+		printf("Allocating Memory..\n");
+
+		//Compute ranking
 		int i;
-		
+
 		float normQuerys[Qn];
 		float normDocs[Dn];
+		float rank[Dn];
 
+		printf("Computing Scores..\n");
+
+		tLoc = clock();
 		for(i=0; i<Qn; i++){
 			normQuerys[i] = euclid(Q[i], n);
 		}
+		tLoc = clock() - tLoc;
+		time_taken = ((double) tLoc) / CLOCKS_PER_SEC;
+		printf("-- [C] compute Query norms: %f seconds --\n", time_taken);
 
+		tLoc = clock();
 		for(i=0; i<Dn; i++){
 			normDocs[i] = euclid(Docs[i], n);
 		}
+		tLoc = clock() - tLoc;
+		time_taken = ((double) tLoc) / CLOCKS_PER_SEC;
+		printf("-- [C] compute Doc norms: %f seconds --\n", time_taken);
 
+		tLoc = clock();
 		for(i=0; i<Dn; i++){
-			score[i] = desm(Q, Docs[i], n, Qn, normQuerys, normDocs[i]);
+			rank[i] = desm(Q, Docs[i], n, Qn, normQuerys, normDocs[i]);
 		}
+		tLoc = clock() - tLoc;
+		time_taken = ((double) tLoc) / CLOCKS_PER_SEC;
+		printf("-- [C] compute Rankings: %f seconds --\n", time_taken);
+
+		printf("Sorting ranks..\n");
+
+		tLoc = clock();
+
+		//Sort ranking
+		struct sorted_rank *ranking = malloc(sizeof(*ranking) * Dn);
+
+		for(i = 0; i < Dn; i++){
+			ranking[i].value = rank[i];
+			ranking[i].index = i;
+		}
+
+		qsort(ranking, Dn, sizeof(ranking[0]), compare_scores);
+		tLoc = clock() - tLoc;
+		time_taken = ((double) tLoc) / CLOCKS_PER_SEC;
+		printf("-- [C] sort rankings: %f seconds --\n", time_taken);
+
+		if(Dn < topN){
+			for (i = 0; i < Dn; i++){
+				printf("\nScore: %f\n", ranking[i].value);
+				score[i] = ranking[i].index;
+			}
+		}
+		else{
+			for (i = 0; i < topN; i++){
+				printf("Score: %f\n", ranking[i].value);
+				score[i] = ranking[i].index;
+			}
+		}
+
+		printf("Done!\n\n");
+
+		tGlob = clock() - tGlob;
+		time_taken = ((double) tGlob) / CLOCKS_PER_SEC;
+		printf("-- [C] Whole runtime: %f seconds --\n", time_taken);
+
 		return score;
 	}
 
@@ -560,41 +638,100 @@ static void (*_cffi_call_python_org)(struct _cffi_externpy_s *, char *);
 /************************************************************/
 
 static void *_cffi_types[] = {
-/*  0 */ _CFFI_OP(_CFFI_OP_FUNCTION, 6), // float *()(float(*)[200], float(*)[200], int, int, int, float *)
-/*  1 */ _CFFI_OP(_CFFI_OP_POINTER, 32), // float(*)[200]
+/*  0 */ _CFFI_OP(_CFFI_OP_FUNCTION, 9), // float()(float *, float *, int)
+/*  1 */ _CFFI_OP(_CFFI_OP_POINTER, 9), // float *
 /*  2 */ _CFFI_OP(_CFFI_OP_NOOP, 1),
 /*  3 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7), // int
-/*  4 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/*  5 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/*  6 */ _CFFI_OP(_CFFI_OP_POINTER, 17), // float *
-/*  7 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
-/*  8 */ _CFFI_OP(_CFFI_OP_FUNCTION, 17), // float()(float *, float *, int)
-/*  9 */ _CFFI_OP(_CFFI_OP_NOOP, 6),
-/* 10 */ _CFFI_OP(_CFFI_OP_NOOP, 6),
-/* 11 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/* 12 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
-/* 13 */ _CFFI_OP(_CFFI_OP_FUNCTION, 17), // float()(float *, float *, int, float, float)
-/* 14 */ _CFFI_OP(_CFFI_OP_NOOP, 6),
-/* 15 */ _CFFI_OP(_CFFI_OP_NOOP, 6),
-/* 16 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/* 17 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 13), // float
-/* 18 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 13),
-/* 19 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
-/* 20 */ _CFFI_OP(_CFFI_OP_FUNCTION, 17), // float()(float *, int)
-/* 21 */ _CFFI_OP(_CFFI_OP_NOOP, 6),
-/* 22 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
+/*  4 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
+/*  5 */ _CFFI_OP(_CFFI_OP_FUNCTION, 9), // float()(float *, float *, int, float, float)
+/*  6 */ _CFFI_OP(_CFFI_OP_NOOP, 1),
+/*  7 */ _CFFI_OP(_CFFI_OP_NOOP, 1),
+/*  8 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
+/*  9 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 13), // float
+/* 10 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 13),
+/* 11 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
+/* 12 */ _CFFI_OP(_CFFI_OP_FUNCTION, 9), // float()(float *, int)
+/* 13 */ _CFFI_OP(_CFFI_OP_NOOP, 1),
+/* 14 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
+/* 15 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
+/* 16 */ _CFFI_OP(_CFFI_OP_FUNCTION, 9), // float()(float(*)[200], float *, int, int, float *, float)
+/* 17 */ _CFFI_OP(_CFFI_OP_POINTER, 37), // float(*)[200]
+/* 18 */ _CFFI_OP(_CFFI_OP_NOOP, 1),
+/* 19 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
+/* 20 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
+/* 21 */ _CFFI_OP(_CFFI_OP_NOOP, 1),
+/* 22 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 13),
 /* 23 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
-/* 24 */ _CFFI_OP(_CFFI_OP_FUNCTION, 17), // float()(float(*)[200], float *, int, int, float *, float)
-/* 25 */ _CFFI_OP(_CFFI_OP_NOOP, 1),
-/* 26 */ _CFFI_OP(_CFFI_OP_NOOP, 6),
+/* 24 */ _CFFI_OP(_CFFI_OP_FUNCTION, 30), // int *()(float(*)[200], float(*)[200], int, int, int, int *, int)
+/* 25 */ _CFFI_OP(_CFFI_OP_NOOP, 17),
+/* 26 */ _CFFI_OP(_CFFI_OP_NOOP, 17),
 /* 27 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
 /* 28 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/* 29 */ _CFFI_OP(_CFFI_OP_NOOP, 6),
-/* 30 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 13),
-/* 31 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
-/* 32 */ _CFFI_OP(_CFFI_OP_ARRAY, 17), // float[200]
-/* 33 */ (_cffi_opcode_t)(200),
+/* 29 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
+/* 30 */ _CFFI_OP(_CFFI_OP_POINTER, 3), // int *
+/* 31 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
+/* 32 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
+/* 33 */ _CFFI_OP(_CFFI_OP_FUNCTION, 3), // int()(void const *, void const *)
+/* 34 */ _CFFI_OP(_CFFI_OP_POINTER, 39), // void const *
+/* 35 */ _CFFI_OP(_CFFI_OP_NOOP, 34),
+/* 36 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
+/* 37 */ _CFFI_OP(_CFFI_OP_ARRAY, 9), // float[200]
+/* 38 */ (_cffi_opcode_t)(200),
+/* 39 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 0), // void
 };
+
+static int _cffi_d_compare_scores(void const * x0, void const * x1)
+{
+  return compare_scores(x0, x1);
+}
+#ifndef PYPY_VERSION
+static PyObject *
+_cffi_f_compare_scores(PyObject *self, PyObject *args)
+{
+  void const * x0;
+  void const * x1;
+  Py_ssize_t datasize;
+  int result;
+  PyObject *arg0;
+  PyObject *arg1;
+
+  if (!PyArg_UnpackTuple(args, "compare_scores", 2, 2, &arg0, &arg1))
+    return NULL;
+
+  datasize = _cffi_prepare_pointer_call_argument(
+      _cffi_type(34), arg0, (char **)&x0);
+  if (datasize != 0) {
+    if (datasize < 0)
+      return NULL;
+    x0 = (void const *)alloca((size_t)datasize);
+    memset((void *)x0, 0, (size_t)datasize);
+    if (_cffi_convert_array_from_object((char *)x0, _cffi_type(34), arg0) < 0)
+      return NULL;
+  }
+
+  datasize = _cffi_prepare_pointer_call_argument(
+      _cffi_type(34), arg1, (char **)&x1);
+  if (datasize != 0) {
+    if (datasize < 0)
+      return NULL;
+    x1 = (void const *)alloca((size_t)datasize);
+    memset((void *)x1, 0, (size_t)datasize);
+    if (_cffi_convert_array_from_object((char *)x1, _cffi_type(34), arg1) < 0)
+      return NULL;
+  }
+
+  Py_BEGIN_ALLOW_THREADS
+  _cffi_restore_errno();
+  { result = compare_scores(x0, x1); }
+  _cffi_save_errno();
+  Py_END_ALLOW_THREADS
+
+  (void)self; /* unused */
+  return _cffi_from_c_int(result, int);
+}
+#else
+#  define _cffi_f_compare_scores _cffi_d_compare_scores
+#endif
 
 static float _cffi_d_computeCosine(float * x0, float * x1, int x2, float x3, float x4)
 {
@@ -621,24 +758,24 @@ _cffi_f_computeCosine(PyObject *self, PyObject *args)
     return NULL;
 
   datasize = _cffi_prepare_pointer_call_argument(
-      _cffi_type(6), arg0, (char **)&x0);
+      _cffi_type(1), arg0, (char **)&x0);
   if (datasize != 0) {
     if (datasize < 0)
       return NULL;
     x0 = (float *)alloca((size_t)datasize);
     memset((void *)x0, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x0, _cffi_type(6), arg0) < 0)
+    if (_cffi_convert_array_from_object((char *)x0, _cffi_type(1), arg0) < 0)
       return NULL;
   }
 
   datasize = _cffi_prepare_pointer_call_argument(
-      _cffi_type(6), arg1, (char **)&x1);
+      _cffi_type(1), arg1, (char **)&x1);
   if (datasize != 0) {
     if (datasize < 0)
       return NULL;
     x1 = (float *)alloca((size_t)datasize);
     memset((void *)x1, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x1, _cffi_type(6), arg1) < 0)
+    if (_cffi_convert_array_from_object((char *)x1, _cffi_type(1), arg1) < 0)
       return NULL;
   }
 
@@ -694,24 +831,24 @@ _cffi_f_desm(PyObject *self, PyObject *args)
     return NULL;
 
   datasize = _cffi_prepare_pointer_call_argument(
-      _cffi_type(1), arg0, (char **)&x0);
+      _cffi_type(17), arg0, (char **)&x0);
   if (datasize != 0) {
     if (datasize < 0)
       return NULL;
     x0 = (float(*)[200])alloca((size_t)datasize);
     memset((void *)x0, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x0, _cffi_type(1), arg0) < 0)
+    if (_cffi_convert_array_from_object((char *)x0, _cffi_type(17), arg0) < 0)
       return NULL;
   }
 
   datasize = _cffi_prepare_pointer_call_argument(
-      _cffi_type(6), arg1, (char **)&x1);
+      _cffi_type(1), arg1, (char **)&x1);
   if (datasize != 0) {
     if (datasize < 0)
       return NULL;
     x1 = (float *)alloca((size_t)datasize);
     memset((void *)x1, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x1, _cffi_type(6), arg1) < 0)
+    if (_cffi_convert_array_from_object((char *)x1, _cffi_type(1), arg1) < 0)
       return NULL;
   }
 
@@ -724,13 +861,13 @@ _cffi_f_desm(PyObject *self, PyObject *args)
     return NULL;
 
   datasize = _cffi_prepare_pointer_call_argument(
-      _cffi_type(6), arg4, (char **)&x4);
+      _cffi_type(1), arg4, (char **)&x4);
   if (datasize != 0) {
     if (datasize < 0)
       return NULL;
     x4 = (float *)alloca((size_t)datasize);
     memset((void *)x4, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x4, _cffi_type(6), arg4) < 0)
+    if (_cffi_convert_array_from_object((char *)x4, _cffi_type(1), arg4) < 0)
       return NULL;
   }
 
@@ -772,24 +909,24 @@ _cffi_f_dotprod(PyObject *self, PyObject *args)
     return NULL;
 
   datasize = _cffi_prepare_pointer_call_argument(
-      _cffi_type(6), arg0, (char **)&x0);
+      _cffi_type(1), arg0, (char **)&x0);
   if (datasize != 0) {
     if (datasize < 0)
       return NULL;
     x0 = (float *)alloca((size_t)datasize);
     memset((void *)x0, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x0, _cffi_type(6), arg0) < 0)
+    if (_cffi_convert_array_from_object((char *)x0, _cffi_type(1), arg0) < 0)
       return NULL;
   }
 
   datasize = _cffi_prepare_pointer_call_argument(
-      _cffi_type(6), arg1, (char **)&x1);
+      _cffi_type(1), arg1, (char **)&x1);
   if (datasize != 0) {
     if (datasize < 0)
       return NULL;
     x1 = (float *)alloca((size_t)datasize);
     memset((void *)x1, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x1, _cffi_type(6), arg1) < 0)
+    if (_cffi_convert_array_from_object((char *)x1, _cffi_type(1), arg1) < 0)
       return NULL;
   }
 
@@ -829,13 +966,13 @@ _cffi_f_euclid(PyObject *self, PyObject *args)
     return NULL;
 
   datasize = _cffi_prepare_pointer_call_argument(
-      _cffi_type(6), arg0, (char **)&x0);
+      _cffi_type(1), arg0, (char **)&x0);
   if (datasize != 0) {
     if (datasize < 0)
       return NULL;
     x0 = (float *)alloca((size_t)datasize);
     memset((void *)x0, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x0, _cffi_type(6), arg0) < 0)
+    if (_cffi_convert_array_from_object((char *)x0, _cffi_type(1), arg0) < 0)
       return NULL;
   }
 
@@ -856,9 +993,9 @@ _cffi_f_euclid(PyObject *self, PyObject *args)
 #  define _cffi_f_euclid _cffi_d_euclid
 #endif
 
-static float * _cffi_d_scores(float(* x0)[200], float(* x1)[200], int x2, int x3, int x4, float * x5)
+static int * _cffi_d_scores(float(* x0)[200], float(* x1)[200], int x2, int x3, int x4, int * x5, int x6)
 {
-  return scores(x0, x1, x2, x3, x4, x5);
+  return scores(x0, x1, x2, x3, x4, x5, x6);
 }
 #ifndef PYPY_VERSION
 static PyObject *
@@ -869,38 +1006,40 @@ _cffi_f_scores(PyObject *self, PyObject *args)
   int x2;
   int x3;
   int x4;
-  float * x5;
+  int * x5;
+  int x6;
   Py_ssize_t datasize;
-  float * result;
+  int * result;
   PyObject *arg0;
   PyObject *arg1;
   PyObject *arg2;
   PyObject *arg3;
   PyObject *arg4;
   PyObject *arg5;
+  PyObject *arg6;
 
-  if (!PyArg_UnpackTuple(args, "scores", 6, 6, &arg0, &arg1, &arg2, &arg3, &arg4, &arg5))
+  if (!PyArg_UnpackTuple(args, "scores", 7, 7, &arg0, &arg1, &arg2, &arg3, &arg4, &arg5, &arg6))
     return NULL;
 
   datasize = _cffi_prepare_pointer_call_argument(
-      _cffi_type(1), arg0, (char **)&x0);
+      _cffi_type(17), arg0, (char **)&x0);
   if (datasize != 0) {
     if (datasize < 0)
       return NULL;
     x0 = (float(*)[200])alloca((size_t)datasize);
     memset((void *)x0, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x0, _cffi_type(1), arg0) < 0)
+    if (_cffi_convert_array_from_object((char *)x0, _cffi_type(17), arg0) < 0)
       return NULL;
   }
 
   datasize = _cffi_prepare_pointer_call_argument(
-      _cffi_type(1), arg1, (char **)&x1);
+      _cffi_type(17), arg1, (char **)&x1);
   if (datasize != 0) {
     if (datasize < 0)
       return NULL;
     x1 = (float(*)[200])alloca((size_t)datasize);
     memset((void *)x1, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x1, _cffi_type(1), arg1) < 0)
+    if (_cffi_convert_array_from_object((char *)x1, _cffi_type(17), arg1) < 0)
       return NULL;
   }
 
@@ -917,35 +1056,40 @@ _cffi_f_scores(PyObject *self, PyObject *args)
     return NULL;
 
   datasize = _cffi_prepare_pointer_call_argument(
-      _cffi_type(6), arg5, (char **)&x5);
+      _cffi_type(30), arg5, (char **)&x5);
   if (datasize != 0) {
     if (datasize < 0)
       return NULL;
-    x5 = (float *)alloca((size_t)datasize);
+    x5 = (int *)alloca((size_t)datasize);
     memset((void *)x5, 0, (size_t)datasize);
-    if (_cffi_convert_array_from_object((char *)x5, _cffi_type(6), arg5) < 0)
+    if (_cffi_convert_array_from_object((char *)x5, _cffi_type(30), arg5) < 0)
       return NULL;
   }
 
+  x6 = _cffi_to_c_int(arg6, int);
+  if (x6 == (int)-1 && PyErr_Occurred())
+    return NULL;
+
   Py_BEGIN_ALLOW_THREADS
   _cffi_restore_errno();
-  { result = scores(x0, x1, x2, x3, x4, x5); }
+  { result = scores(x0, x1, x2, x3, x4, x5, x6); }
   _cffi_save_errno();
   Py_END_ALLOW_THREADS
 
   (void)self; /* unused */
-  return _cffi_from_c_pointer((char *)result, _cffi_type(6));
+  return _cffi_from_c_pointer((char *)result, _cffi_type(30));
 }
 #else
 #  define _cffi_f_scores _cffi_d_scores
 #endif
 
 static const struct _cffi_global_s _cffi_globals[] = {
-  { "computeCosine", (void *)_cffi_f_computeCosine, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 13), (void *)_cffi_d_computeCosine },
-  { "desm", (void *)_cffi_f_desm, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 24), (void *)_cffi_d_desm },
-  { "dotprod", (void *)_cffi_f_dotprod, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 8), (void *)_cffi_d_dotprod },
-  { "euclid", (void *)_cffi_f_euclid, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 20), (void *)_cffi_d_euclid },
-  { "scores", (void *)_cffi_f_scores, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 0), (void *)_cffi_d_scores },
+  { "compare_scores", (void *)_cffi_f_compare_scores, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 33), (void *)_cffi_d_compare_scores },
+  { "computeCosine", (void *)_cffi_f_computeCosine, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 5), (void *)_cffi_d_computeCosine },
+  { "desm", (void *)_cffi_f_desm, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 16), (void *)_cffi_d_desm },
+  { "dotprod", (void *)_cffi_f_dotprod, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 0), (void *)_cffi_d_dotprod },
+  { "euclid", (void *)_cffi_f_euclid, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 12), (void *)_cffi_d_euclid },
+  { "scores", (void *)_cffi_f_scores, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 24), (void *)_cffi_d_scores },
 };
 
 static const struct _cffi_type_context_s _cffi_type_context = {
@@ -955,12 +1099,12 @@ static const struct _cffi_type_context_s _cffi_type_context = {
   NULL,  /* no struct_unions */
   NULL,  /* no enums */
   NULL,  /* no typenames */
-  5,  /* num_globals */
+  6,  /* num_globals */
   0,  /* num_struct_unions */
   0,  /* num_enums */
   0,  /* num_typenames */
   NULL,  /* no includes */
-  34,  /* num_types */
+  40,  /* num_types */
   0,  /* flags */
 };
 

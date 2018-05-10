@@ -1,5 +1,6 @@
 #include<obliv.oh>
 #include<stdio.h>
+#include<time.h>
 
 #include"desm.h"
 
@@ -66,7 +67,6 @@ void load_data(protocolIO *io, float **v, int amount, int n){
 
 void toObliv2d(int amount, int n, obliv float **ov, float **v, int party){
 	int i, j;
-	printf("\ntoObliv2d Party: %d\n", party);
 	for (i=0; i<amount; i++){
 		for (j=0; j<n; j++){
 			ov[i][j] = feedOblivFloat(v[i][j], party);
@@ -76,13 +76,19 @@ void toObliv2d(int amount, int n, obliv float **ov, float **v, int party){
 
 void toObliv1d(int amount, obliv float *ov, float *v, int party){
 	int i;
-	printf("\ntoObliv1d Party: %d\n", party);
 	for(i=0; i<amount; i++){
 		ov[i] = feedOblivFloat(v[i], party);
 	}
 }
 
 void desm(void* args){
+
+	clock_t tGlob;
+	clock_t tLoc;
+	clock_t tObl;
+	double time_taken;
+
+	tGlob = clock();
 
 	//Get the data from the C-Code
 	protocolIO *io = (protocolIO*) args;
@@ -93,7 +99,8 @@ void desm(void* args){
 	//cant be obliv, because they are needed for several loops
 
 	printf("\n-----initilize constants-----\n");
-
+	tLoc = clock();
+	
 	const int Dm;
 	const int Qm;
 	const int n;
@@ -133,10 +140,15 @@ void desm(void* args){
 	obliv float *normD = malloc(Dm*sizeof(obliv float));
 	obliv float *normQ = malloc(Qm*sizeof(obliv float));
 
+	tLoc = clock() - tLoc;
+	time_taken = ((double) tLoc) / CLOCKS_PER_SEC;
+	printf("-- [oblivc] allocate memory for local data, norms, obliv data: %f seconds --\n", time_taken);
+
 
 	//convert the 2-Dim. Arrays of the structs to obliv Arrays
 
 	printf("\n-----load data-----\n");
+	tLoc = clock();
 
 	//assign the data locally (for testing purposes)	
 	if(ocCurrentParty()==1){
@@ -145,12 +157,22 @@ void desm(void* args){
 	if(ocCurrentParty()==2){
 		load_data(io, Qt, Qm, n);
 	}
+	tLoc = clock() - tLoc;
+	time_taken = ((double) tLoc) / CLOCKS_PER_SEC;
+	printf("-- [oblivc] load local data: %f seconds --\n", time_taken);
 
 	printf("\n-----distribute data-----\n");
+	tLoc = clock();
 
 	//Use the locally assigned data to assign it to obliv array (using pointers)
 	toObliv2d(Dm, n, D, Dt, 1);
 	toObliv2d(Qm, n, Q, Qt, 2);
+	tLoc = clock() - tLoc;
+	time_taken = ((double) tLoc) / CLOCKS_PER_SEC;
+	printf("-- [oblivc] feed obliv data: %f seconds --\n", time_taken);
+
+	printf("\n-----compute/distribute norm-----\n");
+	tLoc = clock();
 
 	//Compute euclidean distances locally
 	for(i=0; i<Qm; i++){
@@ -160,29 +182,54 @@ void desm(void* args){
 		normDt[i] = euclid(Dt[i], n);
 	}
 
-	printf("\n-----distribute norm-----\n");
-
 	//Distribute locally data obliviously
 	toObliv1d(Dm, normD, normDt, 1);
 	toObliv1d(Qm, normQ, normQt, 2);
+	tLoc = clock() - tLoc;
+	time_taken = ((double) tLoc) / CLOCKS_PER_SEC;
+	printf("-- [oblivc] compute and feed obliv norms: %f seconds --\n", time_taken);
 
 
 	//Compute Scores
-
 	printf("\n-----Compute Scores-----\n");
+	tLoc = clock();
 
 	//Allocate obliv score-values
 	obliv float *score = malloc(sizeof(obliv float) * Dm);
 
 	//Compute (per document-vector) the desm-score (in oblivious fashion)
 	for(i=0; i<Dm; i++){
+		if(i == 0){
+			tObl = clock();
+		}
 		score[i] = computeScore(Q, D[i], 200, Qm, normQ, normD[i]);
+		if(i == 0){
+			tObl = clock() - tObl;
+			time_taken = ((double) tObl) / CLOCKS_PER_SEC;
+			printf("-- [oblivc] first score: %f seconds --\n", time_taken);
+		}
 	}
+	tLoc = clock() - tLoc;
+	time_taken = ((double) tLoc) / CLOCKS_PER_SEC;
+	printf("-- [oblivc] compute all scores: %f seconds --\n", time_taken);
+
 
 	printf("\n-----Reveal Scores-----\n");
+	tLoc = clock();
+
+	//Save amount of documents for output of party 2
+	io->count_doc = Dm;
 
 	//Reveal the scores to the 2. Party which provided the query
 	for (i = 0; i<Dm; i++){
 		revealOblivFloat(&io->scores[i], score[i], 2);
 	}
+	tLoc = clock() - tLoc;
+	time_taken = ((double) tLoc) / CLOCKS_PER_SEC;
+	printf("-- [oblivc] reveal scores: %f seconds --\n", time_taken);
+
+	tGlob = clock() - tGlob;
+	time_taken = ((double) tGlob) / CLOCKS_PER_SEC;
+	printf("-- [oblivc] Whole runtime: %f seconds --\n", time_taken);
+
 }
