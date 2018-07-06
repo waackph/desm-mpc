@@ -18,7 +18,7 @@ docs_path = sys.argv[1]
 query_str = sys.argv[2]
 
 #amount of top-ranked documents
-top_n = 2
+top_n = 830
 
 model_dir = "../../model/"
 has_model_idx = True
@@ -63,8 +63,29 @@ print("-- [python] C-Program runtime: %s seconds --" % (time.time() - c_start_ti
 
 ########## Output
 
-for idx in scores:
-	print(str(idx), titles[idx])
+print("Get position of relevant Documents in Ranking:")
+
+relevant_idx = []
+rel_amount = 10
+
+rel_start = 350
+for i in range(rel_start, rel_start + rel_amount): #range(top_n-1):
+	relevant_idx.append(i)
+
+rel_start = 610
+for i in range(rel_start, rel_start + rel_amount):
+	relevant_idx.append(i)
+
+scores_py = ffi.unpack(scores, top_n)
+score_pos = []
+for idx in relevant_idx:
+	print(str(idx), scores_py.index(idx))
+	score_pos.append(scores_py.index(idx))
+
+print("Median of Ranking-Result:", np.median(score_pos))
+
+#for idx in scores:
+#	print(str(idx), titles[idx])
 
 
 print("-- [python] Whole runtime: %s seconds --" % (time.time() - start_time))

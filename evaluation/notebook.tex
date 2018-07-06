@@ -1,0 +1,954 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[11pt]{article}
+
+    
+    
+    \usepackage[T1]{fontenc}
+    % Nicer default font (+ math font) than Computer Modern for most use cases
+    \usepackage{mathpazo}
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % We will generate all images so they have a width \maxwidth. This means
+    % that they will get their normal width if they fit onto the page, but
+    % are scaled down if they would overflow the margins.
+    \makeatletter
+    \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth
+    \else\Gin@nat@width\fi}
+    \makeatother
+    \let\Oldincludegraphics\includegraphics
+    % Set max figure width to be 80% of text width, for now hardcoded.
+    \renewcommand{\includegraphics}[1]{\Oldincludegraphics[width=.8\maxwidth]{#1}}
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionLabelFormat{nolabel}{}
+    \captionsetup{labelformat=nolabel}
+
+    \usepackage{adjustbox} % Used to constrain images to a maximum size 
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage[utf8x]{inputenc} % Allow utf-8 characters in the tex document
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range 
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    
+
+    
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatability definitions
+    \def\gt{>}
+    \def\lt{<}
+    % Document parameters
+    \title{Evaluating\_rank\_results\_v2}
+    
+    
+    
+
+    % Pygments definitions
+    
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@fm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@ch\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@vm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@cpf\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@dl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@sa\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@mb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % Exact colors from NB
+    \definecolor{incolor}{rgb}{0.0, 0.0, 0.5}
+    \definecolor{outcolor}{rgb}{0.545, 0.0, 0.0}
+
+
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    \section{Evaluation des DESM-Ranking}\label{evaluation-des-desm-ranking}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}2}]:} \PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+        \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\end{Verbatim}
+
+
+    Zuerst laden wir den Korpus "News Vertical Search Dataset" als pandas
+Dataframe in den Speicher (in Variable "corpus"). Wir entfernen
+unnoetige Spalten.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}3}]:} \PY{n}{corpus} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{../../data/eval\PYZus{}corpus.csv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{;}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{k}{del} \PY{n}{corpus}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Unnamed: 0}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\end{Verbatim}
+
+
+    Schauen wir uns die existierenden Suchanfragen an und waehlen zufaellig
+Anfragen die wir testen wollen.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}4}]:} \PY{n}{corpus}\PY{o}{.}\PY{n}{shape}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}4}]:} (830, 5)
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}17}]:} \PY{n+nb}{set}\PY{p}{(}\PY{n}{corpus}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{query}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}17}]:} \{'a\_hoax',
+          'a\_video',
+          'aaron\_is\_dead',
+          'aaron\_swartz',
+          'amber\_alert',
+          'american\_airlines',
+          'angelina\_jolie',
+          'armed\_guards',
+          'big\_board',
+          'blue\_jackets',
+          'cam\_newton',
+          "cartridges\_didn't",
+          'ces\_2013',
+          'chase\_jarvis',
+          'chip\_kelly',
+          'cirque\_du\_soleil',
+          'cnn\_chile',
+          'colonial\_marines',
+          'david\_miscavige',
+          'debt\_ceiling',
+          'devil\_may\_cry',
+          'duchess\_of\_cambridge',
+          'el\_riesgo\_de',
+          'fc\_barcelona',
+          'former\_bodyguard',
+          'fue\_el',
+          'golden\_globes',
+          'gun\_control',
+          'gun\_violence',
+          'i\_know',
+          'ice\_cream',
+          'indiana\_jones',
+          'internet\_genius',
+          'iphone\_5s',
+          'issued\_for',
+          "jack\_lew's\_signature",
+          'jodie\_foster',
+          'justin\_timberlake',
+          'katherine\_webb',
+          'kris\_humphries',
+          'la\_mega',
+          'lance\_armstrong',
+          'lena\_dunham',
+          "lew's\_signature\_is",
+          'met\_office',
+          'mike\_mccoy',
+          'miss\_america',
+          'new\_maps',
+          'nfl\_kicks',
+          'para\_la',
+          'penny\_arcade',
+          'return\_to\_music',
+          'roger\_ebert',
+          'ryan\_seacrest',
+          'school\_shooting',
+          'serious\_jibber-jabber',
+          'set\_for',
+          'sky\_sports',
+          'spring\_breakers',
+          'super\_bowl',
+          'team\_sky',
+          'the\_national\_anthem',
+          'the\_nfl',
+          'the\_nhl',
+          'the\_tech',
+          'tom\_brady',
+          'training\_camp',
+          'un\_tren',
+          'van\_persie',
+          'video\_of\_the\_day',
+          'violent\_video\_games',
+          "what's\_the\_point",
+          'white\_house',
+          'whole\_foods\_ceo'\}
+\end{Verbatim}
+            
+    \subsection{Anfrage 1}\label{anfrage-1}
+
+    Die erste Suchanfrage, die wir testen ist "what's\_the\_point". Im
+folgenden wird pro Anfrage die gleiche Struktur verwendet: Als erstes
+schauen wir uns die (laut Test-Korpus) relevanten Dokumente in einer
+Uebersicht an. Darauf folgen die Ergebnisse (Ranking-Scores und
+entsprechende Indices sowie headlines) des DESM-Rankings auf dem
+gesamten Korpus.\\
+Zum Schluss folgt jeweils eine Beschreibung der Beobachtungen von den
+Ergebnissen.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}18}]:} \PY{c+c1}{\PYZsh{} query: whats the point}
+         \PY{n}{corpus}\PY{p}{[}\PY{n}{corpus}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{query}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{what}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{s\PYZus{}the\PYZus{}point}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}18}]:}      source             query  score  \textbackslash{}
+         550  reddit  what's\_the\_point      5   
+         551    news  what's\_the\_point      1   
+         552    news  what's\_the\_point      1   
+         553    news  what's\_the\_point      1   
+         554  reddit  what's\_the\_point     14   
+         555    news  what's\_the\_point      1   
+         556  reddit  what's\_the\_point     54   
+         557    news  what's\_the\_point      1   
+         558  reddit  what's\_the\_point     22   
+         559    news  what's\_the\_point      1   
+         
+                                                       headline  \textbackslash{}
+         550  If you're an atheist, what's the point in livi{\ldots}   
+         551  <strong>FoxBusiness.com</strong> - Time to Pay{\ldots}   
+         552                      The Oxford Eagle - Jimmy Reed   
+         553  <strong>Berkshire Eagle</strong> - Man charged{\ldots}   
+         554           At what point does it stop being coffee?   
+         555  <strong>LA Times</strong> - December home pric{\ldots}   
+         556  At what point do I disclose this somewhat cont{\ldots}   
+         557  How To - Hit a Scissor Kick Overhead - <strong{\ldots}   
+         558  Follow Up To: At what point do you just Give U{\ldots}   
+         559  Another Day, Another Goldman Sachs Exec, Anoth{\ldots}   
+         
+                                                        summary  
+         550  Before the flaming starts, read what I have to{\ldots}  
+         551  You\&\#39;ll want to get to <strong>the <strong>{\ldots}  
+         552  Local columnist Jimmy Reed writes about a youn{\ldots}  
+         553  A Guatemalan man living in Pittsfield is being{\ldots}  
+         554  A lot of people say they like coffee, but what{\ldots}  
+         555  The median is <strong>the <strong>point</stron{\ldots}  
+         556  I know this belongs in /r/askmen but this sub {\ldots}  
+         557  When you\&\#39;re at net and a lob goes over you{\ldots}  
+         558  Four days ago I posted [At what point do you j{\ldots}  
+         559  (On this count, <strong>the <strong>point</str{\ldots}  
+\end{Verbatim}
+            
+    Ranking Resultate\\
+Score: -0.014798\\
+Score: -0.015701\\
+Score: -0.016491\\
+Score: -0.016642\\
+Score: -0.017701\\
+Score: -0.018240\\
+Score: -0.018658\\
+Score: -0.018713\\
+Score: -0.018824\\
+Score: -0.018914\\
+Score: -0.019741\\
+Score: -0.019768\\
+Score: -0.019769\\
+Score: -0.019800\\
+Score: -0.019886\\
+Score: -0.020071\\
+Score: -0.020086\\
+Score: -0.020126\\
+Score: -0.020245\\
+Score: -0.020331
+
+557 How To - Hit a Scissor Kick Overhead - tennis.com\\
+465 Serious question: When" can people "pirate" airline tickets?"\\
+554 At what point does it stop being coffee?\\
+558 Follow Up To: At what point do you just Give Up"? "\\
+24 Messi renews Barcelona contract - Taipei Times\\
+101 What's the weather like where you are?\\
+819 Is ironman mode a new concept in gaming that I've missed until
+now?\\
+129 Philly.com - The Numbers Behind Billick - BoopStats\\
+339 Pats hope to continue success without Gronkowski - NewsOK.com\\
+290 Super Bowl Predictions: Must include justification.\\
+523 ContraCostaTimes.com - Colin Kaepernick's college coach to his pupil
+- 'Just awesome' - ContraCostaTimes.com\\
+464 2012 MacBook Pro internet is spotty.\\
+194 Known hoaxes?\\
+499 Can someone please explain to me what the point of having a PAT" is
+and not just a straight 7 point touchdown?"\\
+608 A Fresh Approach - Mailtribune.com\\
+497 NFL To Kick Off Exciting Playoff Weekend - WKAR\\
+109 CNN.com - Ice, fog spread across United Kingdom - Photos - CNN.com\\
+708 Are Video Game Shows Dying Out\\
+559 Another Day, Another Goldman Sachs Exec, Another Gwathmey Penthouse
+Sale - Observer\\
+618 Austin's source for local news - Joystick takes an early look at
+Deadpool game - The Austin Daily Herald
+
+    Get position of relevant Documents in Ranking:\\
+550 21\\
+551 34\\
+552 97\\
+553 388\\
+554 2\\
+555 91\\
+556 347\\
+557 0\\
+558 3\\
+559 18\\
+Median of Ranking-Result: 27.5
+
+    In den Top 20 Ergebnissen sind 4 von 10 nach dem Testkorpus relevanten
+Dokumente vertreten. Anscheinend besteht ein groeßerer Teil der
+Ergebnisdokumente aus Fragestellungen, was die Query in ihrer Form als
+Frage widerspiegelt (vielleicht auch durch das Wort "what"). Im
+folgenden Beispielhaft der Platz 2 im Ranking, der nicht in den
+relevanten Dokumenten ist.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}19}]:} \PY{n}{corpus}\PY{o}{.}\PY{n}{ix}\PY{p}{[}\PY{l+m+mi}{465}\PY{p}{]}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{summary}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}19}]:} "It's all connected to the internet. Some genius out there can find a bug to exploit. Is it possible?"
+\end{Verbatim}
+            
+    \subsection{Anfrage 2}\label{anfrage-2}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}20}]:} \PY{c+c1}{\PYZsh{} Query: aaron is dead}
+         \PY{n}{corpus}\PY{p}{[}\PY{n}{corpus}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{query}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{aaron\PYZus{}is\PYZus{}dead}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}20}]:}      source          query  score  \textbackslash{}
+         590  reddit  aaron\_is\_dead      1   
+         591  reddit  aaron\_is\_dead      7   
+         592  reddit  aaron\_is\_dead     10   
+         593  reddit  aaron\_is\_dead      5   
+         594  reddit  aaron\_is\_dead     96   
+         595  reddit  aaron\_is\_dead     12   
+         596  reddit  aaron\_is\_dead      9   
+         597  reddit  aaron\_is\_dead      5   
+         598  reddit  aaron\_is\_dead     10   
+         599  reddit  aaron\_is\_dead      9   
+         
+                                                       headline  \textbackslash{}
+         590  Who should I pick up from the waiver wire: Cra{\ldots}   
+         591                               Laying a Trap Part 2   
+         592  Favorite Fight Friday: Aaron Pryor vs Alexis A{\ldots}   
+         593  [KEEPER ADVICE] - At what point do you throw i{\ldots}   
+         594         Aaron Shwartz is dead - Reddit, we did it!   
+         595    So is Bruce Banner Back? (Incredible Hulk \#7.1)   
+         596  [Story 1] The Greater Thelema Society - A Disp{\ldots}   
+         597       Aaron's Android Advice reviews: Mage Defense   
+         598  Name 3 people dead or alive that you would lov{\ldots}   
+         599  [Contains Huge Comic Spoilers]: Fan speculatio{\ldots}   
+         
+                                                        summary  
+         590  I plan on dropping Victor Cruz for one of thes{\ldots}  
+         591  2nd Squadron surged from the Thermopylae, secu{\ldots}  
+         592  With all the resurgence of the Pacweather talk{\ldots}  
+         593  Hey all. In my PPR league, I'm now 3-6 and dea{\ldots}  
+         594                                                  .  
+         595  So 7 issues in and Bruce Banner is already bac{\ldots}  
+         596  “It’s about time you showed up.”\textbackslash{}n\textbackslash{}n“Don’t act{\ldots}  
+         597  Aaron’s Android Advice\textbackslash{}n\textbackslash{}nTITLE:\textbackslash{}tMage Defense{\ldots}  
+         598  My room mate and I got vaped tonight and decid{\ldots}  
+         599  So I was having a discussion about TWD with th{\ldots}  
+\end{Verbatim}
+            
+    Ranking Resultate\\
+Score: -0.020255\\
+Score: -0.034791\\
+Score: -0.034818\\
+Score: -0.036768\\
+Score: -0.037668\\
+Score: -0.038481\\
+Score: -0.039062\\
+Score: -0.039318\\
+Score: -0.039349\\
+Score: -0.039872\\
+Score: -0.041260\\
+Score: -0.041516\\
+Score: -0.041943\\
+Score: -0.042028\\
+Score: -0.042063\\
+Score: -0.042567\\
+Score: -0.042985\\
+Score: -0.043199\\
+Score: -0.043255\\
+Score: -0.043418
+
+594 Aaron Shwartz is dead - Reddit, we did it!\\
+305 How do you rank the 32 starting Quarterbacks?\\
+506 RIP Aaron Swartz\\
+357 New Game Releases -- January 2013\\
+85 PETER DINKLAGE WINS THE GOLDEN GLOBE!!!\\
+350 New Video Game Releases -- January 2013\\
+300 Over 1/3 of starting QB's are in their rookie or sophomore season.\\
+610 {[}H{]} Skyrim, Arma 2 CO, CS:GO, Walking Dead, DmC Devil May Cry,
+Sid Meier's Civilization V - Gods and Kings, Arma X, FM 2013,
+Dishonored, Blackops 2 {[}W{]} TF Keys, Offers\\
+368 Miss Alabama Katherine Webb thinks being called 'Sexy' is
+derogatory.\\
+356 New Game Releases -- January 2013 - Q 103 - Albany's \#1 Rock
+Station\\
+595 So is Bruce Banner Back?\\
+342 Post-Gazette.com - A Leno joke walked into 'Conan' - Pittsburgh
+Post-Gazette\\
+339 Pats hope to continue success without Gronkowski - NewsOK.com\\
+351 DMC - Devil May Cry's Sexy Character Reveal --- Kat\\
+326 who let this guy host?\\
+349 92.9 WLMI Lansing's Greatest Hits - TV Tidbits - 'Mindy Project'
+Casting Shake-Up, 'Simpsons' Produce Judd Apatow Script - 92.9 WLMI
+Lansing's Greatest Hits\\
+190 The Island Packet - College Football\\
+379 WFMY News 2 - Naomi Campbell Mugged, George Lucas Engaged - Video -
+digtriad.com\\
+151 Husband in love with Selena Gomez\\
+286 Online activist Aaron Swartz commits suicide, relative says --
+CNN.com
+
+    Get position of relevant Documents in Ranking:\\
+590 21\\
+591 264\\
+592 69\\
+593 60\\
+594 0\\
+595 10\\
+596 110\\
+597 568\\
+598 36\\
+599 47\\
+Median of Ranking-Result: 53.5
+
+    In den Top 20 Ergebnissen sind 2 von 10 nach dem Testkorpus relevanten
+Dokumente vertreten. Einige der Artikel sind jedoch offenbar doch
+relevant fuer die Anfrage, aber nicht im Testkorpus als relevant
+markiert. Dies liegt an der vereinfachten Annahme, dass nur die bei der
+Query auftretenden Ergebnisse auch relevant sind, was offensichtlich
+nicht zutrifft. Im folgenden ein Beispiel.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}21}]:} \PY{n}{corpus}\PY{o}{.}\PY{n}{ix}\PY{p}{[}\PY{l+m+mi}{506}\PY{p}{]}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{summary}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}21}]:} "We are in recess until Monday in honor of the late Aaron Swartz, Reddit's Co-Founder."
+\end{Verbatim}
+            
+    \subsection{Anfrage 3}\label{anfrage-3}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}22}]:} \PY{c+c1}{\PYZsh{} Query: justin timberlake}
+         \PY{n}{corpus}\PY{p}{[}\PY{n}{corpus}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{query}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{justin\PYZus{}timberlake}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}22}]:}      source              query  score  \textbackslash{}
+         690    news  justin\_timberlake      1   
+         691    news  justin\_timberlake      1   
+         692    news  justin\_timberlake      1   
+         693    news  justin\_timberlake      1   
+         694  reddit  justin\_timberlake     19   
+         695    news  justin\_timberlake      1   
+         696    news  justin\_timberlake      1   
+         697    news  justin\_timberlake      1   
+         698    news  justin\_timberlake      1   
+         699    news  justin\_timberlake      1   
+         
+                                                       headline  \textbackslash{}
+         690  <strong><strong>Justin</strong> <strong>Timber{\ldots}   
+         691     <strong>99.5 Magic FM</strong> - From ABC News   
+         692  <strong>Sun Herald</strong> - Highlights of Ho{\ldots}   
+         693  Tip(s) of the hat - <strong>StarTribune.com</s{\ldots}   
+         694  How come musicians often become well-respected{\ldots}   
+         695  <strong>Front</strong> - Highlights of Hollywo{\ldots}   
+         696  <strong>Ohio</strong> - Oscar Documentary Semi{\ldots}   
+         697  Product News - Panasonic Televisions to Offer {\ldots}   
+         698  Forget about the Oscars, <strong><strong>Justi{\ldots}   
+         699  <strong>WKBT</strong> - Celebrities with Janua{\ldots}   
+         
+                                                        summary  
+         690  Get The Commercial Appeal on your iPhone, iPad{\ldots}  
+         691  There is a precedent for musicians who\&\#39;ve {\ldots}  
+         692  \&quot;Runner Runner\&quot;: An online gambling {\ldots}  
+         693  <strong><strong>Justin</strong> <strong>Timber{\ldots}  
+         694  Mark Wahlberg, Justin Timberlake, Will Smith, {\ldots}  
+         695  \&quot;Runner Runner\&quot;: An online gambling {\ldots}  
+         696  List is here I expect to have more to say late{\ldots}  
+         697  Music Star <strong><strong>Justin</strong> <st{\ldots}  
+         698  ONLINE TRENDS FOR JAN 10, 2013.  By Tim Swift,{\ldots}  
+         699  If January has you celebrating a birthday, you{\ldots}  
+\end{Verbatim}
+            
+    Ranking Resultate\\
+Score: -0.045070\\
+Score: -0.049264\\
+Score: -0.055307\\
+Score: -0.057209\\
+Score: -0.057606\\
+Score: -0.058397\\
+Score: -0.060346\\
+Score: -0.060892\\
+Score: -0.062312\\
+Score: -0.062392\\
+Score: -0.062725\\
+Score: -0.063486\\
+Score: -0.064333\\
+Score: -0.064550\\
+Score: -0.065284\\
+Score: -0.065646\\
+Score: -0.065715\\
+Score: -0.065915\\
+Score: -0.066097\\
+Score: -0.066185
+
+321 Friday's TV talk shows - StarTribune.com\\
+594 Aaron Shwartz is dead - Reddit, we did it!\\
+641 NEW YORK - Timberlake hints return to music in video - The Sun
+Herald - Celebrities\\
+305 How do you rank the 32 starting Quarterbacks?\\
+325 KTVO-TV 3 - Justin Bieber gets love at American Music Awards - The
+latest local news, weather and high ...\\
+320 HeraldNet.com - Premieres, finales abound on January TV schedule -
+HeraldNet.com - Entertainment\\
+762 Belfast, Northern Ireland, UK, World, News, Business, Entertainment,
+belfasttelegraph.co.uk - Independent Woman - Belfasttelegraph.co.uk\\
+264 Lance Armstrong Interview Could Be Worth Millions to Oprah Winfrey
+Network - Forbes\\
+691 99.5 Magic FM - From ABC News\\
+379 WFMY News 2 - Naomi Campbell Mugged, George Lucas Engaged - Video -
+digtriad.com\\
+695 Front - Highlights of Hollywood's 2013 film lineup - Movie News -
+Tri-CityHerald.com\\
+692 Sun Herald - Highlights of Hollywood's 2013 film lineup - The Sun
+Herald - Celebrities\\
+694 How come musicians often become well-respected actors, but never the
+other way round?\\
+122 Who won this trade?\\
+698 Forget about the Oscars, Justin Timberlake has the big the reveal
+today - baltimoresun.com\\
+349 92.9 WLMI Lansing's Greatest Hits - TV Tidbits - 'Mindy Project'
+Casting Shake-Up, 'Simpsons' Produce Judd Apatow Script - 92.9 WLMI
+Lansing's Greatest Hits\\
+496 NFL kicks fans in the face with Super Bowl XLV - We Never Stop
+Talking Baltimore Sports\\
+673 Lance Armstrong at ease about 'no-holds barred' interview with Oprah
+Winfrey - Dallas-Fort Worth Local Breaking ... 19 Wow.\\
+332 As a Pats fan I am going to do what so many college
+
+    Get position of relevant Documents in Ranking:\\
+690 76\\
+691 8\\
+692 11\\
+693 95\\
+694 12\\
+695 10\\
+696 25\\
+697 23\\
+698 14\\
+699 449\\
+Median of Ranking-Result: 18.5
+
+    In den Top 20 Ergebnissen sind 5 von 10 nach dem Testkorpus relevanten
+Dokumente vertreten. Hier gilt die selbe Beobachtung und Kritik an dem
+gewaehlten Evaluationsansatz, wie folgendes Beispiel zeigt (ebenfalls
+nicht im Testkorpus als relevant vertreten):
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}23}]:} \PY{n}{corpus}\PY{o}{.}\PY{n}{ix}\PY{p}{[}\PY{l+m+mi}{641}\PY{p}{]}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{summary}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}23}]:} 'Timberlake hints <strong><strong>return</strong> <strong>to</strong> <strong>music</strong></strong> in video.  Reactions to nominations for 85th Academy Awards.  January 10, 2013 Updated 7 minutes ago.  The Associated Press.  NEW YORK — Is Justin Timberlake bringing his <strong>music</strong> career back.'
+\end{Verbatim}
+            
+    \subsection{Anfrage 4}\label{anfrage-4}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}24}]:} \PY{c+c1}{\PYZsh{} Query: devil may cry}
+         \PY{n}{corpus}\PY{p}{[}\PY{n}{corpus}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{query}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{devil\PYZus{}may\PYZus{}cry}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}24}]:}      source          query  score  \textbackslash{}
+         350    news  devil\_may\_cry      1   
+         351    news  devil\_may\_cry      1   
+         352    news  devil\_may\_cry      1   
+         353  reddit  devil\_may\_cry    960   
+         354    news  devil\_may\_cry      1   
+         355  reddit  devil\_may\_cry      8   
+         356    news  devil\_may\_cry      1   
+         357    news  devil\_may\_cry      1   
+         358  reddit  devil\_may\_cry      5   
+         359  reddit  devil\_may\_cry     27   
+         610  reddit  devil\_may\_cry      2   
+         611    news  devil\_may\_cry      1   
+         612  reddit  devil\_may\_cry    584   
+         613    news  devil\_may\_cry      1   
+         614  reddit  devil\_may\_cry     15   
+         615  reddit  devil\_may\_cry      4   
+         616  reddit  devil\_may\_cry     29   
+         617    news  devil\_may\_cry      1   
+         618    news  devil\_may\_cry      1   
+         619  reddit  devil\_may\_cry      3   
+         
+                                                       headline  \textbackslash{}
+         350             New Video Game Releases – January 2013   
+         351  DMC - <strong><strong>Devil</strong> <strong><{\ldots}   
+         352                       Too Human Review - MLive.com   
+         353  Steam Summer Camp Sale Day 2: Total War Shogun{\ldots}   
+         354  <strong>Chicago Tribune</strong> - Monday melt{\ldots}   
+         355            WSIB: If I Liked the Devil May Cry Demo   
+         356  New Game Releases – January 2013 - Q 103 - Alb{\ldots}   
+         357                   New Game Releases – January 2013   
+         358  [USA] [H] XCOM: Enemy Unknown, Dishonored, Bor{\ldots}   
+         359  IAmA music producer for Sony Music Japan and h{\ldots}   
+         610  [H] Skyrim, Arma 2 CO, CS:GO, Walking Dead, Dm{\ldots}   
+         611  <strong>LEO Weekly</strong> - Video TapeWorm -{\ldots}   
+         612               This Week in Gaming: October 16 - 22   
+         613  <strong>ContraCostaTimes.com</strong> - A look{\ldots}   
+         614  /r/Gaming, what video game do you think revolu{\ldots}   
+         615  [USA] [H] Kinect, list (360), Dark Souls, God {\ldots}   
+         616  IAmA music producer for Sony Music Japan and h{\ldots}   
+         617  New screenshots released for <strong><strong>D{\ldots}   
+         618  <strong>Austin's source for local news</strong{\ldots}   
+         619  [USA] [H] Borderlands 2, Darksiders 2, Dead or{\ldots}   
+         
+                                                        summary  
+         350  <strong><strong>Devil</strong> <strong><strong{\ldots}  
+         351  <strong><strong>Devil</strong> <strong><strong{\ldots}  
+         352  Sure Too Human could have been a button masher{\ldots}  
+         353  Me again.  \textbackslash{}n  \textbackslash{}nhttp://store.steampowered.com{\ldots}  
+         354  Taking a cue from \&quot;Silent Hill,\&quot; the{\ldots}  
+         355    I just installed the Devil May Cry Demo and {\ldots}  
+         356  <strong><strong>Devil</strong> <strong><strong{\ldots}  
+         357  <strong><strong>Devil</strong> <strong><strong{\ldots}  
+         358  Games are in **pristine** condition, and come {\ldots}  
+         359  This AMA is for my gf. She's worked at Sony Mu{\ldots}  
+         610  * [ARMA II: Combined Operations](http://store{\ldots}  
+         611  The aftermath <strong>may</strong> be the most{\ldots}  
+         612  [**Mobile Version**](https://sites.google.com/{\ldots}  
+         613  The fun starts immediately in January with the{\ldots}  
+         614  Just curious what everyone's opinions are on t{\ldots}  
+         615  **Haves**\textbackslash{}n\textbackslash{}n*Xbox 360:* \textbackslash{}n\textbackslash{}n* \textasciitilde{}\textasciitilde{}Kinect device{\ldots}  
+         616  This AMA is for my gf. She's worked at Sony Mu{\ldots}  
+         617  The Kids are Alright in Dungeon Defenders.  Sl{\ldots}  
+         618  I\&\#39;m wondering if it\&\#39;s going to be kind{\ldots}  
+         619  **Games I have**\textbackslash{}n\textbackslash{}n\textbackslash{}n360:\textbackslash{}n\textbackslash{}n\textbackslash{}n* borderlands {\ldots}  
+\end{Verbatim}
+            
+    Ranking Resultate\\
+Score: 0.000917\\
+Score: -0.001187\\
+Score: -0.003866\\
+Score: -0.004415\\
+Score: -0.004555\\
+Score: -0.005259\\
+Score: -0.005286\\
+Score: -0.008320\\
+Score: -0.009146\\
+Score: -0.010330\\
+Score: -0.011339\\
+Score: -0.011571\\
+Score: -0.011612\\
+Score: -0.011972\\
+Score: -0.012263\\
+Score: -0.012410\\
+Score: -0.012923\\
+Score: -0.012954\\
+Score: -0.012957\\
+Score: -0.013192
+
+352 Too Human Review - MLive.com\\
+351 DMC - Devil May Cry's Sexy Character Reveal --- Kat\\
+357 New Game Releases -- January 2013\\
+76 Can we call progamers" something else?\\
+618 Austin's source for local news - Joystick takes an early look at
+Deadpool game - The Austin Daily Herald\\
+350 New Video Game Releases -- January 2013\\
+355 WSIB: If I Liked the Devil May Cry Demo\\
+610 {[}H{]} Skyrim, Arma 2 CO, CS:GO, Walking Dead, DmC Devil May Cry,
+Sid Meier's Civilization V - Gods and Kings, Arma X, FM 2013,
+Dishonored, Blackops 2 {[}W{]} TF Keys, Offers\\
+356 New Game Releases -- January 2013 - Q 103 - Albany's \#1 Rock
+Station\\
+775 PCMag.com - Web Mourns Internet Activist Aaron Swartz, 26 - News \&
+Opinion - PCMag.com\\
+810 Any opinions on if the Wii U version of Aliens: Colonial Marines
+will have a Collector's Edition?\\
+193 Boston.com - Duped by the Due Date Mind Game - Ultra Sound Pregnancy
+- Boston.com\\
+103 A woman from my office was killed by her husband earlier this
+week.\\
+49 There's always some eccentric person in your city that you always
+seem to see, describe him/her/other.....\\
+574 Up till this day, I still regret seeing the movie Indiana Jones and
+the Kingdom of the Crystal Skull (the fourth movie).\\
+75 Hey Reddit.\\
+77 Hey fellow ents{[}7{]}, I want to know if my brother is an ent.\\
+595 So is Bruce Banner Back?\\
+74 TIFU I read her diary.\\
+171 Game give-away.
+
+    Get position of relevant Documents in Ranking:\\
+350 5\\
+351 1\\
+352 0\\
+353 147\\
+354 29\\
+355 6\\
+356 8\\
+357 2\\
+358 46\\
+359 126\\
+610 7\\
+611 86\\
+612 298\\
+613 26\\
+614 64\\
+615 152\\
+616 127\\
+617 25\\
+618 4\\
+619 214\\
+Median of Ranking-Result: 27.5
+
+    In den Top 20 Ergebnissen sind 8 von 20 nach dem Testkorpus relevanten
+Dokumente vertreten. Hier faellt auf das weitere Testergebnisse
+thematisch ebenfalls Computerspiele thematisieren, jedoch nicht direkt
+das Spiel mit dem Titel "devil may cry". Im folgenden ein Beispiel:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}25}]:} \PY{n}{corpus}\PY{o}{.}\PY{n}{ix}\PY{p}{[}\PY{l+m+mi}{171}\PY{p}{]}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{summary}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}25}]:} "Tired? Stressed? Too broke to buy that game everyone has been talking about for years? Boy, do I have the offer for you! \textbackslash{}n\textbackslash{}nRules: Basically I through it would be nice to give someone a game which has been out for a bit but they have never had the money or opportunity to get themselves. Games like Portal, Half-Life 2, DOOM, Zelda and the like. Steam is easy, cartridges not so much. If you have ever really wanted to play a game but have never been able to get it, post below.\textbackslash{}n\textbackslash{}nEdit: Wow. I didn't really think I would get 200+ replies. I have sent some games to a few but can't do everyone. When I have some money again I'll revisit this thread and send some more. :)"
+\end{Verbatim}
+            
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}

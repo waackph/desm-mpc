@@ -34,7 +34,7 @@ if party == 1:
 elif party == 2:
 	# cambridge
 	query_str = sys.argv[4]
-	top_n = 10 #sys.argv[5]
+	top_n = 2 #sys.argv[5]
 	vecs = extract.get_embeddings(model_dir, query_str, has_model_idx, party)[0]
 	titles = extract.get_titles(sys.argv[5])
 else:
