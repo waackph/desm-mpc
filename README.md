@@ -1,5 +1,9 @@
 # desm-mpc
 
+Studienarbeit: Sichere dezentrale Berechnung eines Dokument-Ranking-Ansatzes
+
+Ziel: Relevanz-basierte Suche auf Basis des Dual Embedding Space Models (DESM) als sichere Multi-Party-Computation Umsetzung.
+
 ## Minimale Anforderung
 1. word2vec-Model nutzen / word-embeddings extrahieren
 2. "word perturbation analysis“-Experiment-Setting in Python nachbilden zur Validierung der korrekten Implementierung. (Versuchsdaten sind im Paper, word2vec-Embbedings sind auf verfügbar. Weitere Experimente im Paper sind leider nicht reproduzierbar, da eine zufällige Auswahl von Daten aus "Bing’s large scale query logs“ verwendet wurde)
